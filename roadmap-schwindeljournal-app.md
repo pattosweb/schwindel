@@ -71,9 +71,17 @@ Technische Details zu jedem Punkt: siehe `datenmodell-und-content-mapping.md`.
       gleich vollständig, Teilen ueber System-Share-Sheet (kein Cloud-Upload)
 
 ## Phase 3 — Wissens-Bibliothek & Übungen
-- [ ] ContentBlock-Tabelle nach `datenmodell-und-content-mapping.md` Abschnitt 3 seeden
-- [ ] Anzeige-Logik: Modus filtert `variantenTiefe` (KOMPASS→VOLL, PEER→PEER, QUICK→KURZ)
-- [ ] Warnzeichen- und Glossar-Blocks immer sichtbar, unabhängig vom Modus
+- [x] ContentBlock-Schema angelegt (additive Migration 3→4), Seed-Mechanismus (REPLACE
+      bei jedem App-Start statt neuer Migration pro Textaenderung)
+- [x] Warnzeichen-Block (Teil A) geseedet und in der Wissens-Bibliothek sichtbar —
+      identischer Wortlaut in allen drei Modi, unabhängig von `variantenTiefe`/
+      `sichtbarInModus`-Filterung (Sicherheitsluecke aus Blueprint-Abgleich geschlossen)
+- [ ] Restliche Buchteile B–H als ContentBlock seeden (VOLL aus Manuskript, PEER/KURZ
+      bereits fertig in `content-varianten-texte.md`)
+- [ ] Anzeige-Logik fuer normale (nicht-Warnzeichen) Bloecke: Modus filtert
+      `variantenTiefe` (KOMPASS→VOLL, PEER→PEER, QUICK→KURZ) — DAO-Query ist bereits
+      darauf vorbereitet, nur Seed-Daten fehlen noch
+- [ ] Glossar-Block (Teil H) immer sichtbar, unabhängig vom Modus
 - [ ] Übungs-Begleiter mit Timer/Wiederholzähler (HWS-Mobilisation, vestibuläres
       Training) — Inhalte aus Teil E
 - [x] PEER-/KURZ-Textfassungen der ContentBlocks — fertig, siehe
