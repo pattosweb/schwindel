@@ -47,3 +47,15 @@ val MIGRATION_1_2 =
             )
         }
     }
+
+/**
+ * Additive Migration (Phase 2): eine neue nullable Spalte fuer das erweiterbare
+ * 30/60-Tage-Journalfenster im Quick-Modus (datenmodell-und-content-mapping.md
+ * Abschnitt 2), fasst sonst nichts an.
+ */
+val MIGRATION_2_3 =
+    object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `user_profile` ADD COLUMN `journalFensterErweitert` INTEGER")
+        }
+    }

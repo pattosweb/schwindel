@@ -22,6 +22,9 @@ interface JournalEntryDao {
     @Query("SELECT * FROM symptom WHERE entryId = :entryId")
     suspend fun getSymptomeFuerEintrag(entryId: Long): List<SymptomEntity>
 
+    @Query("SELECT * FROM symptom")
+    fun observeAlleSymptome(): Flow<List<SymptomEntity>>
+
     @Delete
     suspend fun deleteEntry(entry: JournalEntryEntity)
 }

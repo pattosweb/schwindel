@@ -66,4 +66,40 @@ class AppDatabaseMigrationTest {
         symptomCursor.close()
         migriert.close()
     }
+
+    @Test
+    fun migration2Zu3ErhaeltBestehendenJournalEintragUndErgaenztNeueSpalte() {
+        // Version-2-DB mit UserProfile + einem Journal-Eintrag anlegen.
+        helper.createDatabase(dbName, 2).apply {
+            execSQL("INSERT INTO user_profile (id, modus) VALUES (1, 'QUICK')")
+            execSQL(
+                "INSERT INTO journal_entry (id, datum, uhrzeit, ampel, warnzeichenKeinesAufgetreten) " +
+                    "VALUES (1, '2026-09-08', '10:00', 'ROT', 0)",
+            )
+            close()
+        }
+
+        val migriert = helper.runMigrationsAndValidate(dbName, 3, true, MIGRATION_2_3)
+
+        // Bestehender Journal-Eintrag unangetastet.
+        val eintragCursor = migriert.query("SELECT ampel, warnzeichenKeinesAufgetreten FROM journal_entry WHERE id = 1")
+        assertEquals(1, eintragCursor.count)
+        eintragCursor.moveToFirst()
+        assertEquals("ROT", eintragCursor.getString(0))
+        assertEquals(0, eintragCursor.getInt(1))
+        eintragCursor.close()
+
+        // Neue Spalte ist da (NULL fuer Bestandsdaten) und beschreibbar.
+        val neueSpalteCursor = migriert.query("SELECT journalFensterErweitert FROM user_profile WHERE id = 1")
+        neueSpalteCursor.moveToFirst()
+        assertEquals(true, neueSpalteCursor.isNull(0))
+        neueSpalteCursor.close()
+
+        migriert.execSQL("UPDATE user_profile SET journalFensterErweitert = 1 WHERE id = 1")
+        val aktualisiertCursor = migriert.query("SELECT journalFensterErweitert FROM user_profile WHERE id = 1")
+        aktualisiertCursor.moveToFirst()
+        assertEquals(1, aktualisiertCursor.getInt(0))
+        aktualisiertCursor.close()
+        migriert.close()
+    }
 }

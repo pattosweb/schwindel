@@ -28,6 +28,10 @@ data class UserProfileEntity(
     val seitWannWiederkehrend: String? = null,
     val letzterBlutdruck: String? = null,
     val letzterBlutdruckDatum: LocalDate? = null,
+    // Nur im Quick-Modus relevant: Standard-Journal-Fenster ist 30 Tage, hier auf
+    // 60 Tage erweiterbar (datenmodell-und-content-mapping.md Abschnitt 2). null/false
+    // = Standardfenster.
+    val journalFensterErweitert: Boolean? = null,
 ) {
     companion object {
         const val SINGLETON_ID: Long = 1L

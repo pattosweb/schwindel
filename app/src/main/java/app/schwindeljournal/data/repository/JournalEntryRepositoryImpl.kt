@@ -16,6 +16,7 @@ class JournalEntryRepositoryImpl
         private val dao = database.journalEntryDao()
 
         override val alleEintraege: Flow<List<JournalEntryEntity>> = dao.observeAlleEintraege()
+        override val alleSymptome: Flow<List<SymptomEntity>> = dao.observeAlleSymptome()
 
         override suspend fun speichereEintrag(
             entry: JournalEntryEntity,
