@@ -27,6 +27,7 @@ import app.schwindeljournal.ui.journalverlauf.JournalVerlaufScreen
 import app.schwindeljournal.ui.onboarding.OnboardingScreen
 import app.schwindeljournal.ui.schnellerfassung.SchnellErfassungScreen
 import app.schwindeljournal.ui.shared.ModusViewModel
+import app.schwindeljournal.ui.steckbrief.SteckbriefScreen
 import app.schwindeljournal.ui.uebungsbegleiter.UebungsBegleiterScreen
 import app.schwindeljournal.ui.wissensbibliothek.WissensBibliothekScreen
 
@@ -87,7 +88,11 @@ private fun HauptShell(
                 EinstellungenScreen(
                     aktuellerModus = modus,
                     onModusWechsel = modusViewModel::onModusGewechselt,
+                    onSteckbriefOeffnen = { navController.navigate(Destination.Steckbrief.route) },
                 )
+            }
+            composable(Destination.Steckbrief.route) {
+                SteckbriefScreen(onZurueck = { navController.popBackStack() })
             }
         }
     }

@@ -15,6 +15,8 @@ sealed class Destination(
 
     data object SchnellErfassung : Destination("schnell_erfassung")
 
+    data object Steckbrief : Destination("steckbrief")
+
     data object JournalVerlauf : Destination("journal_verlauf")
 
     data object WissensBibliothek : Destination("wissens_bibliothek")
