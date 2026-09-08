@@ -76,12 +76,15 @@ Technische Details zu jedem Punkt: siehe `datenmodell-und-content-mapping.md`.
 - [x] Warnzeichen-Block (Teil A) geseedet und in der Wissens-Bibliothek sichtbar —
       identischer Wortlaut in allen drei Modi, unabhängig von `variantenTiefe`/
       `sichtbarInModus`-Filterung (Sicherheitsluecke aus Blueprint-Abgleich geschlossen)
-- [ ] Restliche Buchteile B–H als ContentBlock seeden (VOLL aus Manuskript, PEER/KURZ
-      bereits fertig in `content-varianten-texte.md`)
-- [ ] Anzeige-Logik fuer normale (nicht-Warnzeichen) Bloecke: Modus filtert
-      `variantenTiefe` (KOMPASS→VOLL, PEER→PEER, QUICK→KURZ) — DAO-Query ist bereits
-      darauf vorbereitet, nur Seed-Daten fehlen noch
-- [ ] Glossar-Block (Teil H) immer sichtbar, unabhängig vom Modus
+- [x] Restliche Buchteile B–H als ContentBlock geseedet (69 Zeilen, VOLL aus
+      Manuskript, PEER/KURZ aus `content-varianten-texte.md`) — dabei einen
+      adversarial gefundenen Bug behoben (VOLL/PEER teilten sich anfangs denselben
+      Room-Primary-Key, REPLACE-Seed ueberschrieb die Hälfte des Contents)
+- [x] Anzeige-Logik fuer variantenTiefe-gefilterte Bloecke: Modus filtert bereits
+      seit der DAO-Query aus Phase 3 Commit 1 korrekt (KOMPASS→VOLL, PEER→PEER,
+      QUICK→KURZ); zusätzlich Peer-Sortierung "Teil G prominent oben" ergaenzt
+- [x] Glossar-Block (Teil H) in allen Modi sichtbar (VOLL=PEER geteilt, eigene
+      KURZ-Zeile fuer Quick), live auf Emulator in allen drei Modi verifiziert
 - [ ] Übungs-Begleiter mit Timer/Wiederholzähler (HWS-Mobilisation, vestibuläres
       Training) — Inhalte aus Teil E
 - [x] PEER-/KURZ-Textfassungen der ContentBlocks — fertig, siehe

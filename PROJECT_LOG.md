@@ -50,6 +50,10 @@ Ab 08.09.2026: erste Commits (Phase 0 + Phase 0.5 + Phase 1, siehe Roadmap).
 22. `Phase 4: WorkManager + Erinnerungs-Schema (Room-Migration 4->5)`
 23. `Phase 4: ReminderWorker + zentraler Scheduler (Hilt-WorkManager)`
 24. `Phase 4: Erinnerung in Einstellungen bedienbar`
+25. `Doku: Phase 4 (WorkManager-Erinnerung) abgehakt`
+26. `Doku: ganzheitlicher Rundgang (CLAUDE.md Regel 6) nach Phase 0-4`
+27. `Phase 3: Buchteile B-H als ContentBlock geseedet (69 neue Zeilen)`
+28. `Phase 3: Anzeige-Logik fuer variantenTiefe-gefilterte Bloecke ergaenzt`
 
 Details/Verifikation zu 1–4 und 7–10: Test-Gate (`ktlintCheck`, `detekt`,
 `assembleDebug`, `testDebugUnitTest`, `connectedDebugAndroidTest`) grün vor jedem
@@ -77,6 +81,12 @@ Job im JobScheduler bestaetigt (dumpsys jobscheduler) → per "cmd jobscheduler 
 force-getriggert → Benachrichtigung tatsaechlich zugestellt (dumpsys notification:
 korrekter Titel/Text/Channel/PendingIntent) → Worker hat sich selbst fuer +24h neu
 eingeplant → "Nein" → Job storniert, reminderAktiviert korrekt auf 0 persistiert.
+Phase 3 (Buchteile B-H): Seed-Count in der DB nachgezählt (70 ContentBlock-Zeilen,
+nicht nur Build-Erfolg vertraut) → dabei den VOLL/PEER-Primary-Key-Bug gefunden und
+behoben → nach Fix erneut nachgezählt (korrekt 70). Wissens-Bibliothek in allen drei
+Modi geprüft: Kompass zeigt VOLL-Blöcke inkl. Überschriften/Aufzählungen korrekt
+formatiert, Peer zeigt Teil G direkt nach dem Warnzeichen-Block (Prominenz bestaetigt),
+Quick zeigt ausschließlich Warnzeichen + die 11 Kurzglossar-Einträge.
 
 **Beim Live-Test gefunden und gefixt:** `LocalTime.toString()` zeigte in der UI
 Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktion
@@ -149,10 +159,10 @@ statt drei separate Apps zu bauen. Details siehe CLAUDE.md, Abschnitt
 "Multi-Varianten-Architektur", und `datenmodell-und-content-mapping.md`.
 
 ## 6. Nächste Schritte
-- Phase 3: restliche Buchteile B–H als ContentBlock seeden (VOLL aus Manuskript,
-  PEER/KURZ bereits fertig in `content-varianten-texte.md`), Anzeige-Logik fuer
-  variantenTiefe-gefilterte (nicht-Warnzeichen) Bloecke in der UI ergaenzen,
-  Übungs-Begleiter mit Timer/Wiederholzähler
+- Phase 3 Rest: Übungs-Begleiter mit Timer/Wiederholzähler (Teil-E-Texte sind bereits
+  über die Wissens-Bibliothek sichtbar, aber ohne interaktive Timer-UI) — bewusst NICHT
+  in dieser Sitzung mit erledigt, um die Content-Seed-Arbeit nicht mit einer neuen
+  interaktiven Feature-Flaeche zu vermischen
 - Phase 4 Rest: Ampel-Symbolik anpassbar (Barrierefreiheit), Reflexionsfragen-Pool
   (Peer, Inhalt noch zu definieren)
 - Journal-Verlauf zeigt weiterhin nur eine einfache Liste statt "voller Tabelle"
