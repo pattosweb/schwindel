@@ -85,8 +85,10 @@ Technische Details zu jedem Punkt: siehe `datenmodell-und-content-mapping.md`.
       QUICK→KURZ); zusätzlich Peer-Sortierung "Teil G prominent oben" ergaenzt
 - [x] Glossar-Block (Teil H) in allen Modi sichtbar (VOLL=PEER geteilt, eigene
       KURZ-Zeile fuer Quick), live auf Emulator in allen drei Modi verifiziert
-- [ ] Übungs-Begleiter mit Timer/Wiederholzähler (HWS-Mobilisation, vestibuläres
-      Training) — Inhalte aus Teil E
+- [x] Übungs-Begleiter mit Timer/Wiederholzähler (HWS-Mobilisation, vestibuläres
+      Training) — Inhalte aus Teil E, per-Übung eigenständiger Zustand (Timer setzt
+      sich bei Übungswechsel zurück), Quick-Modus zeigt Hinweistext statt leerer
+      Liste (Teil E dort laut Content-Mapping nicht sichtbar)
 - [x] PEER-/KURZ-Textfassungen der ContentBlocks — fertig, siehe
       `content-varianten-texte.md`
 

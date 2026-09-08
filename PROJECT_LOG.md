@@ -54,6 +54,7 @@ Ab 08.09.2026: erste Commits (Phase 0 + Phase 0.5 + Phase 1, siehe Roadmap).
 26. `Doku: ganzheitlicher Rundgang (CLAUDE.md Regel 6) nach Phase 0-4`
 27. `Phase 3: Buchteile B-H als ContentBlock geseedet (69 neue Zeilen)`
 28. `Phase 3: Anzeige-Logik fuer variantenTiefe-gefilterte Bloecke ergaenzt`
+29. `Übungs-Begleiter: Teil-E-Übungen mit Timer und Wiederholungszähler`
 
 Details/Verifikation zu 1–4 und 7–10: Test-Gate (`ktlintCheck`, `detekt`,
 `assembleDebug`, `testDebugUnitTest`, `connectedDebugAndroidTest`) grün vor jedem
@@ -87,6 +88,14 @@ behoben → nach Fix erneut nachgezählt (korrekt 70). Wissens-Bibliothek in all
 Modi geprüft: Kompass zeigt VOLL-Blöcke inkl. Überschriften/Aufzählungen korrekt
 formatiert, Peer zeigt Teil G direkt nach dem Warnzeichen-Block (Prominenz bestaetigt),
 Quick zeigt ausschließlich Warnzeichen + die 11 Kurzglossar-Einträge.
+Übungs-Begleiter (Teil E, Timer/Wiederholzähler): Kompass zeigt alle 6 Übungen mit
+VOLL-Text, Timer startet bei 1:00, +15s/-15s während Pause bedienbar, Start→Pause
+nach 3s korrekt auf 0:56 heruntergezählt, +1-Wiederholung persistiert innerhalb der
+Detailansicht → Zurück zur Liste → andere Übung geöffnet → eigener, frischer
+Timer/Zähler-Zustand bestätigt (kein Bleed-over zwischen Übungen). Peer zeigt
+dieselben 6 Übungen mit PEER-Ich-Erzählung-Text. Quick zeigt korrekt den
+Hinweistext statt leerer Liste (Teil E dort nicht sichtbar). 14/14
+connectedDebugAndroidTest weiterhin grün.
 
 **Beim Live-Test gefunden und gefixt:** `LocalTime.toString()` zeigte in der UI
 Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktion
@@ -159,10 +168,6 @@ statt drei separate Apps zu bauen. Details siehe CLAUDE.md, Abschnitt
 "Multi-Varianten-Architektur", und `datenmodell-und-content-mapping.md`.
 
 ## 6. Nächste Schritte
-- Phase 3 Rest: Übungs-Begleiter mit Timer/Wiederholzähler (Teil-E-Texte sind bereits
-  über die Wissens-Bibliothek sichtbar, aber ohne interaktive Timer-UI) — bewusst NICHT
-  in dieser Sitzung mit erledigt, um die Content-Seed-Arbeit nicht mit einer neuen
-  interaktiven Feature-Flaeche zu vermischen
 - Phase 4 Rest: Ampel-Symbolik anpassbar (Barrierefreiheit), Reflexionsfragen-Pool
   (Peer, Inhalt noch zu definieren)
 - Journal-Verlauf zeigt weiterhin nur eine einfache Liste statt "voller Tabelle"
