@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Nur fuer die taegliche Erinnerung (Phase 4, zentral ueber WorkManager) -
+         Android 13+ (API 33) verlangt diese Laufzeit-Berechtigung fuer Notifications. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".SchwindeljournalApplication"
@@ -30,6 +35,21 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- WorkManager-Default-Initialisierung abschalten: Konfiguration kommt ueber
+             Configuration.Provider in SchwindeljournalApplication (HiltWorkerFactory,
+             zentraler Einstiegspunkt fuer alle Erinnerungen, siehe Engineering-Standard
+             "Zentraler Scheduler" in CLAUDE.md). -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
         </provider>
     </application>
 
