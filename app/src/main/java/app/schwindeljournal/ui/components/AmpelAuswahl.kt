@@ -23,9 +23,6 @@ import app.schwindeljournal.data.model.Ampel
 import app.schwindeljournal.data.model.anzeigename
 import app.schwindeljournal.data.model.beschreibung
 import app.schwindeljournal.data.model.icon
-import app.schwindeljournal.ui.theme.AmpelGelb
-import app.schwindeljournal.ui.theme.AmpelGruen
-import app.schwindeljournal.ui.theme.AmpelRot
 
 /**
  * Schwindelbarometer-Auswahl. Jede Farbe zusaetzlich mit Symbol + Text (UX-Leitplanke,
@@ -47,13 +44,6 @@ fun AmpelAuswahl(
         }
     }
 }
-
-private fun ampelFarbe(ampel: Ampel) =
-    when (ampel) {
-        Ampel.GRUEN -> AmpelGruen
-        Ampel.GELB -> AmpelGelb
-        Ampel.ROT -> AmpelRot
-    }
 
 @Composable
 private fun AmpelKarte(

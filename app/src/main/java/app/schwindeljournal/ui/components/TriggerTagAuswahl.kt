@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
  * Ein Tap fuegt den Tag der Situations-Freitextzeile hinzu – kein eigenes Datenfeld,
  * um das Superset-Schema (datenmodell-und-content-mapping.md) nicht aufzublaehen.
  */
-private val vordefinierteTriggerTags =
+val vordefinierteTriggerTags =
     listOf(
         "Aufstehen",
         "Kopf gedreht",
