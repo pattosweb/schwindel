@@ -3,7 +3,9 @@ package app.schwindeljournal.di
 import android.content.Context
 import androidx.room.Room
 import app.schwindeljournal.data.local.AppDatabase
+import app.schwindeljournal.data.local.dao.AnsprechpartnerDao
 import app.schwindeljournal.data.local.dao.JournalEntryDao
+import app.schwindeljournal.data.local.dao.MedikamentDao
 import app.schwindeljournal.data.local.dao.UserProfileDao
 import app.schwindeljournal.data.local.migration.MIGRATION_1_2
 import dagger.Module
@@ -31,4 +33,10 @@ object DatabaseModule {
 
     @Provides
     fun provideJournalEntryDao(database: AppDatabase): JournalEntryDao = database.journalEntryDao()
+
+    @Provides
+    fun provideMedikamentDao(database: AppDatabase): MedikamentDao = database.medikamentDao()
+
+    @Provides
+    fun provideAnsprechpartnerDao(database: AppDatabase): AnsprechpartnerDao = database.ansprechpartnerDao()
 }

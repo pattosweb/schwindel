@@ -5,6 +5,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.schwindeljournal.data.local.AppDatabase
+import app.schwindeljournal.data.local.entity.AnsprechpartnerEntity
+import app.schwindeljournal.data.local.entity.MedikamentEntity
 import app.schwindeljournal.data.model.Modus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -24,7 +26,7 @@ class UserProfileRepositoryImplTest {
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
-        repository = UserProfileRepositoryImpl(db.userProfileDao())
+        repository = UserProfileRepositoryImpl(db.userProfileDao(), db.medikamentDao(), db.ansprechpartnerDao())
     }
 
     @After
@@ -48,5 +50,47 @@ class UserProfileRepositoryImplTest {
             repository.updateModus(Modus.QUICK)
 
             assertEquals(Modus.QUICK, repository.profile.first()?.modus)
+        }
+
+    @Test
+    fun steckbriefUpdateWirdPersistiert() =
+        runBlocking {
+            repository.createProfile(Modus.KOMPASS)
+            val profil = repository.profile.first()!!
+
+            repository.updateProfile(profil.copy(geburtsjahr = 1990, vorerkrankungen = "Migräne"))
+
+            val aktualisiert = repository.profile.first()!!
+            assertEquals(1990, aktualisiert.geburtsjahr)
+            assertEquals("Migräne", aktualisiert.vorerkrankungen)
+        }
+
+    @Test
+    fun medikamentHinzufuegenUndLoeschenAendertListe() =
+        runBlocking {
+            repository.createProfile(Modus.KOMPASS)
+            val profilId = repository.profile.first()!!.id
+
+            val id = repository.addMedikament(MedikamentEntity(profileId = profilId, name = "Ibuprofen")).getOrThrow()
+            assertEquals(1, repository.observeMedikamente(profilId).first().size)
+
+            repository.deleteMedikament(MedikamentEntity(id = id, profileId = profilId, name = "Ibuprofen"))
+            assertTrue(repository.observeMedikamente(profilId).first().isEmpty())
+        }
+
+    @Test
+    fun ansprechpartnerHinzufuegenUndLoeschenAendertListe() =
+        runBlocking {
+            repository.createProfile(Modus.KOMPASS)
+            val profilId = repository.profile.first()!!.id
+
+            val id =
+                repository
+                    .addAnsprechpartner(AnsprechpartnerEntity(profileId = profilId, rolle = "Hausarzt"))
+                    .getOrThrow()
+            assertEquals(1, repository.observeAnsprechpartner(profilId).first().size)
+
+            repository.deleteAnsprechpartner(AnsprechpartnerEntity(id = id, profileId = profilId, rolle = "Hausarzt"))
+            assertTrue(repository.observeAnsprechpartner(profilId).first().isEmpty())
         }
 }

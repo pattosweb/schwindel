@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import app.schwindeljournal.data.local.entity.UserProfileEntity
 import app.schwindeljournal.data.model.Modus
 import kotlinx.coroutines.flow.Flow
@@ -29,4 +30,7 @@ interface UserProfileDao {
 
     @Query("SELECT COUNT(*) FROM user_profile")
     suspend fun countProfiles(): Int
+
+    @Update
+    suspend fun update(profile: UserProfileEntity)
 }
