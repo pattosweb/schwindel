@@ -59,3 +59,29 @@ val MIGRATION_2_3 =
             db.execSQL("ALTER TABLE `user_profile` ADD COLUMN `journalFensterErweitert` INTEGER")
         }
     }
+
+/**
+ * Additive Migration (Phase 3): legt nur die leere content_block-Tabelle an. Die
+ * Befuellung passiert nicht hier, sondern bei jedem App-Start ueber den REPLACE-Seed
+ * (siehe ContentBlockEntity-Doku) - so brauchen rein redaktionelle Textaenderungen
+ * keine neue Migration.
+ */
+val MIGRATION_3_4 =
+    object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `content_block` (
+                    `id` TEXT NOT NULL,
+                    `buchTeil` TEXT NOT NULL,
+                    `titel` TEXT NOT NULL,
+                    `variantenTiefe` TEXT NOT NULL,
+                    `inhaltMarkdown` TEXT NOT NULL,
+                    `sichtbarInModus` TEXT NOT NULL,
+                    `istWarnzeichenInhalt` INTEGER NOT NULL,
+                    PRIMARY KEY(`id`)
+                )
+                """.trimIndent(),
+            )
+        }
+    }

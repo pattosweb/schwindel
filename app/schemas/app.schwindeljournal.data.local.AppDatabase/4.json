@@ -1,0 +1,428 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "5ca93cdd2fa7e22b23a26b7ccc4b0bc1",
+    "entities": [
+      {
+        "tableName": "user_profile",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `modus` TEXT NOT NULL, `geburtsjahr` INTEGER, `berufMitBelastung` INTEGER, `vorerkrankungen` TEXT, `fruehereVerletzungenKopfNacken` TEXT, `ersterVorfall` INTEGER, `seitWannWiederkehrend` TEXT, `letzterBlutdruck` TEXT, `letzterBlutdruckDatum` TEXT, `journalFensterErweitert` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "modus",
+            "columnName": "modus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "geburtsjahr",
+            "columnName": "geburtsjahr",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "berufMitBelastung",
+            "columnName": "berufMitBelastung",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "vorerkrankungen",
+            "columnName": "vorerkrankungen",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fruehereVerletzungenKopfNacken",
+            "columnName": "fruehereVerletzungenKopfNacken",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ersterVorfall",
+            "columnName": "ersterVorfall",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "seitWannWiederkehrend",
+            "columnName": "seitWannWiederkehrend",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "letzterBlutdruck",
+            "columnName": "letzterBlutdruck",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "letzterBlutdruckDatum",
+            "columnName": "letzterBlutdruckDatum",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "journalFensterErweitert",
+            "columnName": "journalFensterErweitert",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "medikament",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `profileId` INTEGER NOT NULL, `name` TEXT NOT NULL, `dosierung` TEXT, `seitWann` TEXT, FOREIGN KEY(`profileId`) REFERENCES `user_profile`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profileId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dosierung",
+            "columnName": "dosierung",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "seitWann",
+            "columnName": "seitWann",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_medikament_profileId",
+            "unique": false,
+            "columnNames": [
+              "profileId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_medikament_profileId` ON `${TABLE_NAME}` (`profileId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user_profile",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "profileId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ansprechpartner",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `profileId` INTEGER NOT NULL, `rolle` TEXT NOT NULL, `name` TEXT, `telefon` TEXT, FOREIGN KEY(`profileId`) REFERENCES `user_profile`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profileId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rolle",
+            "columnName": "rolle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "telefon",
+            "columnName": "telefon",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ansprechpartner_profileId",
+            "unique": false,
+            "columnNames": [
+              "profileId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ansprechpartner_profileId` ON `${TABLE_NAME}` (`profileId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user_profile",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "profileId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "journal_entry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `datum` TEXT NOT NULL, `uhrzeit` TEXT NOT NULL, `situation` TEXT, `kopfNackenPosition` TEXT, `dauerSekunden` INTEGER, `ampel` TEXT NOT NULL, `schlafqualitaetNachtDavor` TEXT, `kissenhoeheArt` TEXT, `tagesbewertung` TEXT, `reflexionsfrageAntwort` TEXT, `warnzeichenKeinesAufgetreten` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "datum",
+            "columnName": "datum",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uhrzeit",
+            "columnName": "uhrzeit",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "situation",
+            "columnName": "situation",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "kopfNackenPosition",
+            "columnName": "kopfNackenPosition",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dauerSekunden",
+            "columnName": "dauerSekunden",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ampel",
+            "columnName": "ampel",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "schlafqualitaetNachtDavor",
+            "columnName": "schlafqualitaetNachtDavor",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "kissenhoeheArt",
+            "columnName": "kissenhoeheArt",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tagesbewertung",
+            "columnName": "tagesbewertung",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "reflexionsfrageAntwort",
+            "columnName": "reflexionsfrageAntwort",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "warnzeichenKeinesAufgetreten",
+            "columnName": "warnzeichenKeinesAufgetreten",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "symptom",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `entryId` INTEGER NOT NULL, `typ` TEXT NOT NULL, `freitext` TEXT, FOREIGN KEY(`entryId`) REFERENCES `journal_entry`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "entryId",
+            "columnName": "entryId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typ",
+            "columnName": "typ",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "freitext",
+            "columnName": "freitext",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_symptom_entryId",
+            "unique": false,
+            "columnNames": [
+              "entryId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_symptom_entryId` ON `${TABLE_NAME}` (`entryId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "journal_entry",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "entryId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "content_block",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `buchTeil` TEXT NOT NULL, `titel` TEXT NOT NULL, `variantenTiefe` TEXT NOT NULL, `inhaltMarkdown` TEXT NOT NULL, `sichtbarInModus` TEXT NOT NULL, `istWarnzeichenInhalt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "buchTeil",
+            "columnName": "buchTeil",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "titel",
+            "columnName": "titel",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "variantenTiefe",
+            "columnName": "variantenTiefe",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "inhaltMarkdown",
+            "columnName": "inhaltMarkdown",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sichtbarInModus",
+            "columnName": "sichtbarInModus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "istWarnzeichenInhalt",
+            "columnName": "istWarnzeichenInhalt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5ca93cdd2fa7e22b23a26b7ccc4b0bc1')"
+    ]
+  }
+}

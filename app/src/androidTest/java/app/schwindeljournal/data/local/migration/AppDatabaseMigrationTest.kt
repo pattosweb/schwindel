@@ -102,4 +102,33 @@ class AppDatabaseMigrationTest {
         aktualisiertCursor.close()
         migriert.close()
     }
+
+    @Test
+    fun migration3Zu4ErhaeltBestandUndLegtContentBlockTabelleNutzbarAn() {
+        // Version-3-DB mit UserProfile anlegen (JournalEntry/Symptom bleiben aussen vor,
+        // reicht fuer den Nachweis "bestehende Tabellen unangetastet").
+        helper.createDatabase(dbName, 3).apply {
+            execSQL("INSERT INTO user_profile (id, modus, journalFensterErweitert) VALUES (1, 'KOMPASS', 1)")
+            close()
+        }
+
+        val migriert = helper.runMigrationsAndValidate(dbName, 4, true, MIGRATION_3_4)
+
+        val profilCursor = migriert.query("SELECT modus, journalFensterErweitert FROM user_profile WHERE id = 1")
+        profilCursor.moveToFirst()
+        assertEquals("KOMPASS", profilCursor.getString(0))
+        assertEquals(1, profilCursor.getInt(1))
+        profilCursor.close()
+
+        migriert.execSQL(
+            "INSERT INTO content_block " +
+                "(id, buchTeil, titel, variantenTiefe, inhaltMarkdown, sichtbarInModus, istWarnzeichenInhalt) " +
+                "VALUES ('teilA-warnzeichen', 'A', 'Test', 'VOLL', 'x', 'KOMPASS,PEER,QUICK', 1)",
+        )
+        val contentCursor = migriert.query("SELECT COUNT(*) FROM content_block")
+        contentCursor.moveToFirst()
+        assertEquals(1, contentCursor.getInt(0))
+        contentCursor.close()
+        migriert.close()
+    }
 }
