@@ -25,6 +25,17 @@ Technische Details zu jedem Punkt: siehe `datenmodell-und-content-mapping.md`.
       abhängt (zentrale Modus-Abfrage, nicht verstreut in jedem Screen einzeln) —
       `ModusViewModel` einmalig auf Activity-Ebene, explizit an Screens weitergereicht
 
+## Phase 0.5b — Steckbrief-UI (Nachtrag, Blueprint-Abgleich 08.09.2026)
+- [x] Steckbrief-Screen (erreichbar über Einstellungen, in jedem Modus vollständig,
+      wird nie gekürzt): Person (Geburtsjahr, Beruf/Belastung), Medikamente-Liste
+      (sofort persistiert, unabhängig vom Profil-Speichern-Button), Vorerkrankungen,
+      frühere Verletzungen, erster Vorfall + Seit-wann, letzter Blutdruck + Datum,
+      Ansprechpartner-Liste (vordefinierte Rollen-Chips + freie Rolle)
+- [x] Spracheingabe-Alternative auf jedem Freitextfeld auch hier konsequent umgesetzt
+      (SprachEingabeTextField wiederverwendet)
+- [x] Manuell auf Emulator verifiziert: Geburtsjahr/Medikament/Ansprechpartner anlegen →
+      Speichern → App-Kill → Neustart → alles korrekt erhalten
+
 ## Phase 1 — Kernfunktion: Erfassung
 - [x] Room-Datenmodell nach `datenmodell-und-content-mapping.md` Abschnitt 1
       (JournalEntry als Superset-Schema, alle modus-spezifischen Felder nullable) —

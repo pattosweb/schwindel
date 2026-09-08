@@ -36,6 +36,8 @@ Ab 08.09.2026: erste Commits (Phase 0 + Phase 0.5 + Phase 1, siehe Roadmap).
 8. `Phase 1: wiederverwendbare Erfassungs-Bausteine (Ampel, Trigger-Tags, Sprache)`
 9. `Phase 1: Schnell-Erfassung modus-abhaengig (Kompass/Peer/Quick)`
 10. `Phase 1 (Vorgriff): einfache Journal-Verlauf-Liste`
+11. `Blueprint-Abgleich: Peer-Reflexionstext-Vorschau im Journal-Verlauf ergaenzt`
+12. `Phase 0.5b: Steckbrief-UI (Person, Medikamente, Vorerkrankungen, Ansprechpartner)`
 
 Details/Verifikation zu 1–4 und 7–10: Test-Gate (`ktlintCheck`, `detekt`,
 `assembleDebug`, `testDebugUnitTest`, `connectedDebugAndroidTest`) grün vor jedem
@@ -46,6 +48,9 @@ Einstellungen → Moduswechsel → App-Kill → Neustart → Modus bleibt erhalt
 Onboarding → Kompass → Ampel wählen → Details aufklappen → Trigger-Tag setzt
 Situation → Begleitsymptom wählen → Speichern → Eintrag erscheint im Journal-Verlauf;
 Moduswechsel zu Quick zeigt korrekt das minimale 1-Freitextzeilen-Formular.
+Phase 0.5b: Einstellungen → Steckbrief öffnen → Geburtsjahr/Beruf/Medikament/
+Ansprechpartner ausfüllen → Medikament/Ansprechpartner sind sofort persistiert (App-Kill
+überlebt) → Profil-Speichern-Button → App-Kill → Neustart → alle Felder korrekt erhalten.
 
 **Beim Live-Test gefunden und gefixt:** `LocalTime.toString()` zeigte in der UI
 Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktion
@@ -68,13 +73,14 @@ Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktio
 - Dev-Umgebung dieser Session hat keine KVM-Gruppenmitgliedschaft → Emulator lief nur
   mit SwiftShader-Software-Rendering (langsamer, aber funktional); für flüssige
   manuelle Tests auf Patricks Maschine ggf. `sudo usermod -aG kvm $USER` prüfen
-- **Blueprint-Abgleich 08.09.2026 (`datenmodell-und-content-mapping.md` Abschnitt 2):**
-  Steckbrief-UI (Medikamente/Vorerkrankungen/Ansprechpartner bearbeiten) fehlt komplett
-  — Room-Entities existieren seit Phase 0.5, aber kein Screen dazu, und keine
-  Roadmap-Phase weist das aktuell explizit zu. Laut Blueprint sicherheitsrelevant
-  ("Steckbrief-Pflichtfelder Medikamente/Vorerkrankungen ... in keinem Modus gekürzt
-  oder versteckt") — sollte vor Phase 2/3 nachgezogen werden, Patrick entscheidet
-  Zeitpunkt/Priorität
+- **Steckbrief-UI (Person/Beruf/Vorerkrankungen/Medikamente/Ansprechpartner):**
+  **geschlossen 08.09.2026**, siehe Phase 0.5b in der Roadmap.
+- Steckbrief "Zur Person"/Vorerkrankungen/Blutdruck-Felder gehen beim Verlassen des
+  Screens ohne Tap auf "Speichern" kommentarlos verloren (Medikamente/Ansprechpartner
+  sind davon nicht betroffen, die speichern sofort beim Hinzufügen). Kein Datenverlust
+  bereits gespeicherter Werte, nur der ungespeicherte Draft — aber keine Warnung beim
+  Verlassen. Kleiner UX-Polish, kein akutes Risiko, da nichts kommentarlos überschrieben
+  wird; bei Gelegenheit mit "ungespeicherte Änderungen"-Hinweis versehen.
 - **Blueprint-Abgleich 08.09.2026:** "Standard-Journal-Dauer" (60 Tage Kompass/Peer,
   30 Tage Quick mit Erweiterungs-Option) ist in der aktuellen Journal-Verlauf-Liste
   noch nicht umgesetzt — zeigt aktuell alle Einträge ohne Zeitfenster-Begrenzung;
