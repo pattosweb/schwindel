@@ -82,6 +82,27 @@ eingeplant → "Nein" → Job storniert, reminderAktiviert korrekt auf 0 persist
 Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktion
 (HH:mm) eingeführt und in Schnell-Erfassung + Journal-Verlauf verwendet.
 
+## 4a. Ganzheitlicher Rundgang (CLAUDE.md Regel 6) — 08.09.2026
+Erster kompletter Durchgang als echter Nutzer nach Abschluss der Phasen 0–4 (bisher
+nur pro-Feature verifiziert, nie am Stueck): Frisch-Install → Onboarding (Kompass) →
+Schnell-Erfassung (Ampel + Speichern) → Journal-Verlauf (Diagramm/Muster-Karte/PDF-
+Button) → Wissens-Bibliothek (Warnzeichen-Block) → Übungs-Begleiter (Platzhalter) →
+Einstellungen → Steckbrief. Bewusst mit Ein-Hand-Bedienung simuliert (nur Tap, keine
+Mehrfinger-Gesten).
+
+**Ergebnis:** Keine neuen Bugs, kein Absturz, keine Sackgasse. Alle bereits bekannten
+Luecken (siehe Abschnitt 5) weiterhin akkurat, keine zusaetzlichen gefunden.
+
+**Neue Beobachtung (Drei-Perspektiven-Prinzip, UX-/Betroffenen-Sicht):** Elemente am
+oberen Bildschirmrand (z. B. die erste Ampel-Karte "Grün" in der Schnell-Erfassung,
+der "Zurück"-Button oben im Steckbrief) sind bei Einhandhaltung mit dem Daumen auf
+grossen Phones die strukturell am schwersten erreichbare Zone — ein allgemeines
+Phaenomen grosser Touchscreens, kein Implementierungsfehler dieser App, aber relevant
+fuer kuenftige Screens (Uebungs-Begleiter, weitere Content-Bloecke): primaere Aktionen
+nach Moeglichkeit im unteren/mittleren Bildschirmbereich platzieren. Kein akuter
+Handlungsbedarf jetzt (System-Zurueck-Geste bleibt die eigentliche Ein-Hand-Route),
+aber bei der naechsten UI-Ueberarbeitung mitdenken.
+
 ## 5. Bekannte Lücken / bewusst außerhalb des Scopes
 - RBAC: entfällt, Single-User-Offline-App (siehe CLAUDE.md)
 - Rate Limiting: entfällt, keine öffentlichen Endpunkte (siehe CLAUDE.md)
