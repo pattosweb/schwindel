@@ -5,18 +5,25 @@ Bei Widerspruch zur Git-/Code-Historie gilt immer die Historie (siehe CLAUDE.md)
 Technische Details zu jedem Punkt: siehe `datenmodell-und-content-mapping.md`.
 
 ## Phase 0 — Grundgerüst
-- [ ] Android-Studio-Projekt anlegen (Kotlin + Compose)
-- [ ] Gradle-Setup: Room, WorkManager, Compose-Charts-Library
-- [ ] Grundlegende Navigation (Schnell-Erfassung / Journal-Verlauf / Wissens-Bibliothek /
-      Übungs-Begleiter / Einstellungen)
-- [ ] ktlint/detekt-Konfiguration, Test-Gate in CI (falls/sobald CI existiert)
+- [x] Android-Studio-Projekt anlegen (Kotlin + Compose) — `app.schwindeljournal`,
+      minSdk 26, Version Catalog, Hilt, Gradle Wrapper 8.10.2
+- [x] Gradle-Setup: Room — WorkManager und Compose-Charts-Library bewusst erst in
+      Phase 4 bzw. Phase 2 hinzugefügt (YAGNI, keine ungenutzten Abhängigkeiten)
+- [x] Grundlegende Navigation (Schnell-Erfassung / Journal-Verlauf / Wissens-Bibliothek /
+      Übungs-Begleiter / Einstellungen) — alle fünf als Platzhalter-Screens, Bottom-Nav
+- [x] ktlint/detekt-Konfiguration (Compose-Overrides in `config/detekt/detekt.yml`) —
+      CI folgt, sobald eine CI-Umgebung existiert
 
 ## Phase 0.5 — Modus-Architektur (neu, vor Phase 1 nötig)
-- [ ] `UserProfile.modus`-Feld + Enum (KOMPASS/PEER/QUICK) im Room-Schema
-- [ ] Onboarding-Screen: Moduswahl mit kurzer Erklärung der drei Varianten
-- [ ] Einstellungen: Moduswechsel jederzeit möglich, ohne Datenverlust
-- [ ] UI-Grundgerüst so bauen, dass Sichtbarkeit von Feldern/Content vom aktuellen Modus
-      abhängt (zentrale Modus-Abfrage, nicht verstreut in jedem Screen einzeln)
+- [x] `UserProfile.modus`-Feld + Enum (KOMPASS/PEER/QUICK) im Room-Schema — Steckbrief-
+      Cluster (UserProfile/Medikament/Ansprechpartner) v1, adversarial getestet
+      (Doppel-Insert-Schutz, Persistenz nach simuliertem Prozess-Neustart)
+- [x] Onboarding-Screen: Moduswahl mit kurzer Erklärung der drei Varianten
+- [x] Einstellungen: Moduswechsel jederzeit möglich, ohne Datenverlust — manuell auf
+      Emulator verifiziert (App-Kill + Neustart, Modus bleibt erhalten)
+- [x] UI-Grundgerüst so bauen, dass Sichtbarkeit von Feldern/Content vom aktuellen Modus
+      abhängt (zentrale Modus-Abfrage, nicht verstreut in jedem Screen einzeln) —
+      `ModusViewModel` einmalig auf Activity-Ebene, explizit an Screens weitergereicht
 
 ## Phase 1 — Kernfunktion: Erfassung
 - [ ] Room-Datenmodell nach `datenmodell-und-content-mapping.md` Abschnitt 1
