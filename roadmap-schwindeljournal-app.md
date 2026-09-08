@@ -99,8 +99,12 @@ Technische Details zu jedem Punkt: siehe `datenmodell-und-content-mapping.md`.
       force-getriggert → Benachrichtigung zugestellt → Selbst-Neuplanung +24h)
 - [x] Einstellungen: Erinnerung an/aus + Uhrzeit (additive Migration 4→5,
       POST_NOTIFICATIONS-Laufzeitberechtigung nur bei Bedarf abgefragt)
-- [ ] Ampel-Symbolik anpassen (Barrierefreiheit) — noch offen
-- [ ] Reflexionsfragen-Pool für Peer-Modus hinterlegen (Inhalt noch zu definieren)
+- [x] Ampel-Symbolik anpassen (Barrierefreiheit) — optionale kontrastreiche
+      Okabe-Ito-Palette (additive Migration 5→6), zentral über ModusViewModel
+      bereitgestellt, wirkt auf Schnell-Erfassung/Journal-Verlauf/Legende, Symbol+Text
+      bleiben unabhängig von der Farbe erhalten
+- [x] Reflexionsfragen-Pool für Peer-Modus hinterlegen — 14 Fragen, eine pro
+      Kalendertag statt festem Einzelprompt
 
 ## Bewusst zurückgestellt (siehe PROJECT_LOG.md, Abschnitt 5)
 - Cloud-Sync/Backup

@@ -55,6 +55,8 @@ Ab 08.09.2026: erste Commits (Phase 0 + Phase 0.5 + Phase 1, siehe Roadmap).
 27. `Phase 3: Buchteile B-H als ContentBlock geseedet (69 neue Zeilen)`
 28. `Phase 3: Anzeige-Logik fuer variantenTiefe-gefilterte Bloecke ergaenzt`
 29. `Übungs-Begleiter: Teil-E-Übungen mit Timer und Wiederholungszähler`
+30. `Phase 4 Rest: Ampel-Farben mit hohem Kontrast (Barrierefreiheit)` (Room-Migration 5->6)
+31. `Phase 4 Rest: Reflexionsfragen-Pool für Peer-Modus`
 
 Details/Verifikation zu 1–4 und 7–10: Test-Gate (`ktlintCheck`, `detekt`,
 `assembleDebug`, `testDebugUnitTest`, `connectedDebugAndroidTest`) grün vor jedem
@@ -96,6 +98,16 @@ Timer/Zähler-Zustand bestätigt (kein Bleed-over zwischen Übungen). Peer zeigt
 dieselben 6 Übungen mit PEER-Ich-Erzählung-Text. Quick zeigt korrekt den
 Hinweistext statt leerer Liste (Teil E dort nicht sichtbar). 14/14
 connectedDebugAndroidTest weiterhin grün.
+Ampel-Kontrast-Barrierefreiheit: Migration 5->6 adversarial getestet
+(MigrationTestHelper: bestehendes Profil inkl. Erinnerungs-Einstellungen bleibt
+beim Upgrade unangetastet, neue Spalte nutzbar). Live auf Emulator: Einstellungen
+→ "Kontrastreiche Ampel-Farben" → Ja → Persistenz per SQL bestätigt → Schnell-
+Erfassung zeigt Grün/Rot jetzt in Blau/Rotviolett statt Grün/Rot (Screenshot-
+geprüft) → Journal-Verlauf-Diagramm, -Legende und Eintragskarten uebernehmen die
+Palette konsistent → zurück auf "Nein" → Standardfarben wiederhergestellt.
+Reflexionsfragen-Pool: Peer-Modus gewählt → Schnell-Erfassung zeigt eine der 14
+Fragen statt des alten festen Prompts (tagesabhängig, deterministisch).
+15/15 Tests weiterhin grün (neuer Migrationstest inklusive).
 
 **Beim Live-Test gefunden und gefixt:** `LocalTime.toString()` zeigte in der UI
 Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktion
@@ -168,10 +180,13 @@ statt drei separate Apps zu bauen. Details siehe CLAUDE.md, Abschnitt
 "Multi-Varianten-Architektur", und `datenmodell-und-content-mapping.md`.
 
 ## 6. Nächste Schritte
-- Phase 4 Rest: Ampel-Symbolik anpassbar (Barrierefreiheit), Reflexionsfragen-Pool
-  (Peer, Inhalt noch zu definieren)
+Keine offenen Roadmap-Punkte mehr (Phase 0–4 vollständig abgehakt, siehe Roadmap-
+Datei). Verbleibend nur kleinere, bewusst zurückgestellte Punkte unter Abschnitt 5
+("Bekannte Lücken"), z. B.:
 - Journal-Verlauf zeigt weiterhin nur eine einfache Liste statt "voller Tabelle"
   (Vorgriff aus Phase 1) — bei Bedarf später ausbauen
+- Steckbrief-Draft-Verlustwarnung, PDF-Zellenumbruch (lc-debt), Schlafqualität nicht
+  in der Muster-Analyse — alle unverändert seit Abschnitt 5, kein akuter Bedarf
 
 ## 7. Nutzer-Arbeitsweise
 Siehe CLAUDE.md, Abschnitt "Nutzer-Arbeitsweise".
