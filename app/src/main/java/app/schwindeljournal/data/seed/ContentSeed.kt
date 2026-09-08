@@ -15,7 +15,15 @@ import app.schwindeljournal.data.model.VariantenTiefe
  */
 object ContentSeed {
     val alleBloecke: List<ContentBlockEntity> =
-        listOf(warnzeichenBlock)
+        listOf(warnzeichenBlock) +
+            teilABloecke +
+            teilBBloecke +
+            teilCBloecke +
+            teilDBloecke +
+            teilEBloecke +
+            teilFBloecke +
+            teilGBloecke +
+            teilHBloecke
 }
 
 private val warnzeichenBlock =
