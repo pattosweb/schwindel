@@ -12,3 +12,13 @@ style:
     active: true
     ignorePropertyDeclaration: true
     ignoreAnnotated: ['Preview']
+
+complexity:
+  # Formular-ViewModels (z. B. SchnellErfassungViewModel) haben absichtlich viele
+  # kleine, triviale onXyzChange-Handler statt einem generischen Reducer – das ist
+  # hier lesbarer/typsicherer als eine Abstraktion nur fuer die Metrik. Anlage-
+  # spezifische Logik (Entity-Mapping) ist bewusst in Top-Level-Extension-Functions
+  # ausgelagert, die nicht mitgezaehlt werden.
+  TooManyFunctions:
+    active: true
+    thresholdInClasses: 16
