@@ -38,6 +38,10 @@ Ab 08.09.2026: erste Commits (Phase 0 + Phase 0.5 + Phase 1, siehe Roadmap).
 10. `Phase 1 (Vorgriff): einfache Journal-Verlauf-Liste`
 11. `Blueprint-Abgleich: Peer-Reflexionstext-Vorschau im Journal-Verlauf ergaenzt`
 12. `Phase 0.5b: Steckbrief-UI (Person, Medikamente, Vorerkrankungen, Ansprechpartner)`
+13. `Phase 2: 60/30-Tage-Journalfenster (Room-Migration 2->3)`
+14. `Phase 2: Zeitverlaufs-Diagramm + Muster-Erkennung`
+15. `Phase 2: PDF-Export fuers Arztgespraech (Bordmittel)`
+16. `Phase 2: Auswertung in den Journal-Verlauf integriert`
 
 Details/Verifikation zu 1–4 und 7–10: Test-Gate (`ktlintCheck`, `detekt`,
 `assembleDebug`, `testDebugUnitTest`, `connectedDebugAndroidTest`) grün vor jedem
@@ -51,6 +55,11 @@ Moduswechsel zu Quick zeigt korrekt das minimale 1-Freitextzeilen-Formular.
 Phase 0.5b: Einstellungen → Steckbrief öffnen → Geburtsjahr/Beruf/Medikament/
 Ansprechpartner ausfüllen → Medikament/Ansprechpartner sind sofort persistiert (App-Kill
 überlebt) → Profil-Speichern-Button → App-Kill → Neustart → alle Felder korrekt erhalten.
+Phase 2: 7 Testeinträge per SQL geseedet → Diagramm zeigt korrekte Tagesfarben,
+Muster-Karte plausible Häufigkeits-Hinweise → PDF-Export erzeugt (per pdftoppm visuell
+geprüftes) 3-seitiges PDF, Share-Sheet öffnet korrekt → Moduswechsel zu Quick zeigt
+30-Tage-Fenster ohne Muster-Karte → Fenster-Erweitern-Toggle → App-Kill → Neustart →
+60-Tage-Fenster bleibt aktiv.
 
 **Beim Live-Test gefunden und gefixt:** `LocalTime.toString()` zeigte in der UI
 Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktion
@@ -81,10 +90,18 @@ Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktio
   bereits gespeicherter Werte, nur der ungespeicherte Draft — aber keine Warnung beim
   Verlassen. Kleiner UX-Polish, kein akutes Risiko, da nichts kommentarlos überschrieben
   wird; bei Gelegenheit mit "ungespeicherte Änderungen"-Hinweis versehen.
-- **Blueprint-Abgleich 08.09.2026:** "Standard-Journal-Dauer" (60 Tage Kompass/Peer,
-  30 Tage Quick mit Erweiterungs-Option) ist in der aktuellen Journal-Verlauf-Liste
-  noch nicht umgesetzt — zeigt aktuell alle Einträge ohne Zeitfenster-Begrenzung;
-  sinnvoll im Rahmen des Journal-Verlauf-Ausbaus (siehe Abschnitt 6) mitzulösen
+- **Standard-Journal-Dauer (60/30 Tage):** **geschlossen 08.09.2026**, siehe Phase 2
+  in der Roadmap (Migration 2→3 + Fenster-Toggle im Quick-Modus).
+- **Korrelationsansicht deckt Schlafqualität nicht ab:** `schlafqualitaetNachtDavor`
+  ist Freitext (String?, keine Skala) modelliert — eine belastbare Häufigkeits-
+  auszaehlung wie bei Begleitsymptomen/Trigger-Tags ist damit nicht sauber möglich,
+  ohne Freitext zu interpretieren (Risiko falscher Muster). "Mögliche Muster" bleibt
+  daher auf strukturierte Felder beschränkt. Wäre eine strukturierte
+  Schlafqualitäts-Skala gewünscht, ist das eine Datenmodell-Entscheidung fuer
+  Patrick, keine stillschweigende App-Erweiterung.
+- **PDF-Journal-Tabelle:** lange Situationstexte werden pro Zelle abgeschnitten statt
+  umgebrochen (siehe `lc-debt`-Kommentar in `PdfZeichner.kt`) — Inhalt bleibt lesbar,
+  aber nicht immer vollständig auf einen Blick; Upgrade-Pfad dokumentiert im Code.
 
 ## 5a. Scope-Entscheidung vom 08.09.2026: Multi-Varianten-Architektur
 Ursprünglich war die App als Begleiter zu einem einzelnen Buch geplant. Auf Basis der
@@ -94,12 +111,11 @@ statt drei separate Apps zu bauen. Details siehe CLAUDE.md, Abschnitt
 "Multi-Varianten-Architektur", und `datenmodell-und-content-mapping.md`.
 
 ## 6. Nächste Schritte
-- Phase 2: Zeitverlaufs-Diagramm (Ampelfarbe über Zeit), Korrelationsansicht
-  (Kompass/Peer), PDF-Export fürs Arztgespräch
-- Journal-Verlauf-Screen ausbauen: aktuell nur einfache chronologische Liste
-  (Vorgriff aus Phase 1), volle Tabelle/Detailansicht pro Eintrag fehlt noch
-- Parallel: PEER-/KURZ-Textfassungen der ContentBlocks stehen bereits fertig in
-  `content-varianten-texte.md` — Seed für Phase 3 (`ContentBlock`-Tabelle)
+- Phase 3: `ContentBlock`-Tabelle seeden (VOLL aus Manuskript, PEER/KURZ bereits fertig
+  in `content-varianten-texte.md`), Wissens-Bibliothek-Screen, Übungs-Begleiter
+- Journal-Verlauf zeigt weiterhin nur eine einfache Liste statt "voller Tabelle"
+  (Vorgriff aus Phase 1) — bei Bedarf später ausbauen
+- Phase 4: WorkManager-Erinnerungen, Reflexionsfragen-Pool (Peer)
 
 ## 7. Nutzer-Arbeitsweise
 Siehe CLAUDE.md, Abschnitt "Nutzer-Arbeitsweise".

@@ -57,11 +57,18 @@ Technische Details zu jedem Punkt: siehe `datenmodell-und-content-mapping.md`.
       Phase 2
 
 ## Phase 2 — Auswertung
-- [ ] Zeitverlaufs-Diagramm (Ampelfarbe über Zeit) — in Quick-Modus vereinfachte Ansicht
-- [ ] Korrelationsansicht (z. B. Schlafqualität ↔ Schwindelstärke) — nur Kompass/Peer,
-      formuliert als "mögliches Muster", nie als Diagnosehinweis
-- [ ] PDF-Export für Arztgespräch, Format an Buch-Teil F angelehnt, inhaltlich in allen
-      Modi gleich vollständig (Sicherheitsrelevanz, siehe CLAUDE.md)
+- [x] Zeitverlaufs-Diagramm (Ampelfarbe über Zeit) — Balkenreihe ohne Animation/
+      Interaktion, Legende mit Symbol+Text; Quick-Modus zeigt automatisch das
+      vereinfachte 30-Tage-Fenster (in Einstellungen/Auswertung auf 60 Tage
+      erweiterbar, additive Migration 2→3)
+- [x] Korrelationsansicht ("Mögliche Muster") — nur Kompass/Peer, reine
+      Haeufigkeitsauszaehlung aus strukturierten Feldern (Begleitsymptome +
+      vordefinierte Trigger-Tags an Gelb-/Rot-Tagen), nie als Diagnose formuliert.
+      Bewusst NICHT auf der freitextlichen Schlafqualitaet berechnet (Datentyp
+      erlaubt keine belastbare Auszaehlung, siehe PROJECT_LOG "Bekannte Luecken")
+- [x] PDF-Export für Arztgespräch (Bordmittel: android.graphics.pdf.PdfDocument),
+      Steckbrief + Journal-Tabelle + Zusammenfassung, inhaltlich in allen Modi
+      gleich vollständig, Teilen ueber System-Share-Sheet (kein Cloud-Upload)
 
 ## Phase 3 — Wissens-Bibliothek & Übungen
 - [ ] ContentBlock-Tabelle nach `datenmodell-und-content-mapping.md` Abschnitt 3 seeden
