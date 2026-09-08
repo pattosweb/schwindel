@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import app.schwindeljournal.data.model.Modus
 import java.time.LocalDate
+import java.time.LocalTime
 
 /**
  * Superset-Schema des Steckbriefs (Buch Abschnitt 4.1), siehe
@@ -32,6 +33,9 @@ data class UserProfileEntity(
     // 60 Tage erweiterbar (datenmodell-und-content-mapping.md Abschnitt 2). null/false
     // = Standardfenster.
     val journalFensterErweitert: Boolean? = null,
+    // Phase 4: taegliche Erinnerung (zentral ueber WorkManager, siehe ReminderScheduler).
+    val reminderAktiviert: Boolean? = null,
+    val reminderUhrzeit: LocalTime? = null,
 ) {
     companion object {
         const val SINGLETON_ID: Long = 1L

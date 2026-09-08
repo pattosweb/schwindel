@@ -85,3 +85,12 @@ val MIGRATION_3_4 =
             )
         }
     }
+
+/** Additive Migration (Phase 4): Erinnerungs-Einstellungen (an/aus + Uhrzeit). */
+val MIGRATION_4_5 =
+    object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `user_profile` ADD COLUMN `reminderAktiviert` INTEGER")
+            db.execSQL("ALTER TABLE `user_profile` ADD COLUMN `reminderUhrzeit` TEXT")
+        }
+    }

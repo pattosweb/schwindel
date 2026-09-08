@@ -21,8 +21,9 @@ import app.schwindeljournal.data.local.entity.UserProfileEntity
  * Version 1: Steckbrief-Cluster (Phase 0.5). Version 2: JournalEntry/Symptom
  * (Phase 1, siehe [app.schwindeljournal.data.local.migration.MIGRATION_1_2]). Version 3:
  * UserProfile.journalFensterErweitert (Phase 2, siehe MIGRATION_2_3). Version 4:
- * ContentBlock-Tabelle (Phase 3, siehe MIGRATION_3_4) - jede Migration additiv,
- * bestehende Daten bleiben beim Upgrade unangetastet.
+ * ContentBlock-Tabelle (Phase 3, siehe MIGRATION_3_4). Version 5: Erinnerungs-
+ * Einstellungen (Phase 4, siehe MIGRATION_4_5) - jede Migration additiv, bestehende
+ * Daten bleiben beim Upgrade unangetastet.
  */
 @Database(
     entities = [
@@ -33,7 +34,7 @@ import app.schwindeljournal.data.local.entity.UserProfileEntity
         SymptomEntity::class,
         ContentBlockEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
 )
 @TypeConverters(Converters::class, DateTimeConverters::class)

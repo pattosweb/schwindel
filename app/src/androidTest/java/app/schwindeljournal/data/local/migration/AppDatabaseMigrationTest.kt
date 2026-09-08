@@ -131,4 +131,33 @@ class AppDatabaseMigrationTest {
         contentCursor.close()
         migriert.close()
     }
+
+    @Test
+    fun migration4Zu5ErhaeltBestandUndErgaenztErinnerungsSpalten() {
+        helper.createDatabase(dbName, 4).apply {
+            execSQL("INSERT INTO user_profile (id, modus, geburtsjahr) VALUES (1, 'PEER', 1990)")
+            close()
+        }
+
+        val migriert = helper.runMigrationsAndValidate(dbName, 5, true, MIGRATION_4_5)
+
+        val cursor =
+            migriert.query(
+                "SELECT modus, geburtsjahr, reminderAktiviert, reminderUhrzeit FROM user_profile WHERE id = 1",
+            )
+        cursor.moveToFirst()
+        assertEquals("PEER", cursor.getString(0))
+        assertEquals(1990, cursor.getInt(1))
+        assertEquals(true, cursor.isNull(2))
+        assertEquals(true, cursor.isNull(3))
+        cursor.close()
+
+        migriert.execSQL("UPDATE user_profile SET reminderAktiviert = 1, reminderUhrzeit = '20:00' WHERE id = 1")
+        val aktualisiert = migriert.query("SELECT reminderAktiviert, reminderUhrzeit FROM user_profile WHERE id = 1")
+        aktualisiert.moveToFirst()
+        assertEquals(1, aktualisiert.getInt(0))
+        assertEquals("20:00", aktualisiert.getString(1))
+        aktualisiert.close()
+        migriert.close()
+    }
 }
