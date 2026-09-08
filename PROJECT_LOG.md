@@ -46,6 +46,10 @@ Ab 08.09.2026: erste Commits (Phase 0 + Phase 0.5 + Phase 1, siehe Roadmap).
 18. `Phase 3: ContentBlock-Schema (Room-Migration 3->4)`
 19. `Phase 3: Warnzeichen-Inhalt geseedet (Sicherheitsluecke geschlossen)`
 20. `Phase 3: Wissens-Bibliothek zeigt Warnzeichen-Block (Platzhalter abgeloest)`
+21. `Doku: Warnzeichen-Sicherheitsluecke geschlossen, Prioritaet Phase 4 begruendet`
+22. `Phase 4: WorkManager + Erinnerungs-Schema (Room-Migration 4->5)`
+23. `Phase 4: ReminderWorker + zentraler Scheduler (Hilt-WorkManager)`
+24. `Phase 4: Erinnerung in Einstellungen bedienbar`
 
 Details/Verifikation zu 1–4 und 7–10: Test-Gate (`ktlintCheck`, `detekt`,
 `assembleDebug`, `testDebugUnitTest`, `connectedDebugAndroidTest`) grün vor jedem
@@ -68,6 +72,11 @@ Phase 3 (Warnzeichen-Block): Wissens-Bibliothek geoeffnet → Warnzeichen-Block 
 formatiert (Ueberschriften/Aufzaehlungen/fett) sichtbar, optisch als Sicherheitshinweis
 abgesetzt → Modus zu Quick gewechselt → identischer Block weiterhin sichtbar (istWarn-
 zeichenInhalt-Override bestaetigt, unabhaengig von variantenTiefe/sichtbarInModus).
+Phase 4 (Erinnerung): Einstellungen → "Ja" → POST_NOTIFICATIONS-Dialog → erteilt →
+Job im JobScheduler bestaetigt (dumpsys jobscheduler) → per "cmd jobscheduler run -f"
+force-getriggert → Benachrichtigung tatsaechlich zugestellt (dumpsys notification:
+korrekter Titel/Text/Channel/PendingIntent) → Worker hat sich selbst fuer +24h neu
+eingeplant → "Nein" → Job storniert, reminderAktiviert korrekt auf 0 persistiert.
 
 **Beim Live-Test gefunden und gefixt:** `LocalTime.toString()` zeigte in der UI
 Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktion
@@ -123,8 +132,8 @@ statt drei separate Apps zu bauen. Details siehe CLAUDE.md, Abschnitt
   PEER/KURZ bereits fertig in `content-varianten-texte.md`), Anzeige-Logik fuer
   variantenTiefe-gefilterte (nicht-Warnzeichen) Bloecke in der UI ergaenzen,
   Übungs-Begleiter mit Timer/Wiederholzähler
-- Danach Phase 4: WorkManager-Erinnerungen (treibt die eigentliche Journal-Nutzung,
-  siehe Expertenempfehlung 08.09.2026), Reflexionsfragen-Pool (Peer)
+- Phase 4 Rest: Ampel-Symbolik anpassbar (Barrierefreiheit), Reflexionsfragen-Pool
+  (Peer, Inhalt noch zu definieren)
 - Journal-Verlauf zeigt weiterhin nur eine einfache Liste statt "voller Tabelle"
   (Vorgriff aus Phase 1) — bei Bedarf später ausbauen
 

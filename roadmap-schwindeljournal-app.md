@@ -88,8 +88,13 @@ Technische Details zu jedem Punkt: siehe `datenmodell-und-content-mapping.md`.
       `content-varianten-texte.md`
 
 ## Phase 4 — Komfort & Erinnerungen
-- [ ] WorkManager-Erinnerung zum täglichen Nachtragen
-- [ ] Einstellungen: Erinnerungszeit, Ampel-Symbolik anpassen (Barrierefreiheit)
+- [x] WorkManager-Erinnerung zum täglichen Nachtragen — zentraler Scheduler
+      (Configuration.Provider + HiltWorkerFactory), zeigt nur, wenn heute noch kein
+      Eintrag existiert, End-to-End auf Emulator verifiziert (Job geplant →
+      force-getriggert → Benachrichtigung zugestellt → Selbst-Neuplanung +24h)
+- [x] Einstellungen: Erinnerung an/aus + Uhrzeit (additive Migration 4→5,
+      POST_NOTIFICATIONS-Laufzeitberechtigung nur bei Bedarf abgefragt)
+- [ ] Ampel-Symbolik anpassen (Barrierefreiheit) — noch offen
 - [ ] Reflexionsfragen-Pool für Peer-Modus hinterlegen (Inhalt noch zu definieren)
 
 ## Bewusst zurückgestellt (siehe PROJECT_LOG.md, Abschnitt 5)
