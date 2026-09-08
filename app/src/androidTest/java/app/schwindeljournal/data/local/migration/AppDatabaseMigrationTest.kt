@@ -160,4 +160,37 @@ class AppDatabaseMigrationTest {
         aktualisiert.close()
         migriert.close()
     }
+
+    @Test
+    fun migration5Zu6ErhaeltBestandUndErgaenztAmpelKontrastSpalte() {
+        helper.createDatabase(dbName, 5).apply {
+            execSQL(
+                "INSERT INTO user_profile (id, modus, geburtsjahr, reminderAktiviert, reminderUhrzeit) " +
+                    "VALUES (1, 'KOMPASS', 1978, 1, '20:00')",
+            )
+            close()
+        }
+
+        val migriert = helper.runMigrationsAndValidate(dbName, 6, true, MIGRATION_5_6)
+
+        val cursor =
+            migriert.query(
+                "SELECT modus, geburtsjahr, reminderAktiviert, reminderUhrzeit, ampelHoherKontrast " +
+                    "FROM user_profile WHERE id = 1",
+            )
+        cursor.moveToFirst()
+        assertEquals("KOMPASS", cursor.getString(0))
+        assertEquals(1978, cursor.getInt(1))
+        assertEquals(1, cursor.getInt(2))
+        assertEquals("20:00", cursor.getString(3))
+        assertEquals(true, cursor.isNull(4))
+        cursor.close()
+
+        migriert.execSQL("UPDATE user_profile SET ampelHoherKontrast = 1 WHERE id = 1")
+        val aktualisiert = migriert.query("SELECT ampelHoherKontrast FROM user_profile WHERE id = 1")
+        aktualisiert.moveToFirst()
+        assertEquals(1, aktualisiert.getInt(0))
+        aktualisiert.close()
+        migriert.close()
+    }
 }

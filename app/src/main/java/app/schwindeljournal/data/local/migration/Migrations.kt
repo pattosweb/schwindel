@@ -94,3 +94,14 @@ val MIGRATION_4_5 =
             db.execSQL("ALTER TABLE `user_profile` ADD COLUMN `reminderUhrzeit` TEXT")
         }
     }
+
+/**
+ * Additive Migration (Phase 4 Rest): Barrierefreiheits-Einstellung fuer die
+ * Ampel-Palette (Rot-Gruen-Sehschwaeche), siehe UserProfileEntity-Doku.
+ */
+val MIGRATION_5_6 =
+    object : Migration(5, 6) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `user_profile` ADD COLUMN `ampelHoherKontrast` INTEGER")
+        }
+    }

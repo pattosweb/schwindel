@@ -20,17 +20,28 @@ import app.schwindeljournal.data.model.Ampel
 import app.schwindeljournal.data.model.anzeigename
 import app.schwindeljournal.data.model.icon
 import app.schwindeljournal.ui.theme.AmpelGelb
+import app.schwindeljournal.ui.theme.AmpelGelbKontrast
 import app.schwindeljournal.ui.theme.AmpelGruen
+import app.schwindeljournal.ui.theme.AmpelGruenKontrast
 import app.schwindeljournal.ui.theme.AmpelRot
+import app.schwindeljournal.ui.theme.AmpelRotKontrast
 
 private const val LEERER_TAG_HOEHE_ANTEIL = 0.15f
 private const val BALKEN_BREITE_ANTEIL = 0.8f
 
-fun ampelFarbe(ampel: Ampel): Color =
+/**
+ * hoherKontrast: Barrierefreiheits-Einstellung (Einstellungen-Screen, UserProfile.
+ * ampelHoherKontrast) - ersetzt Gruen/Rot durch eine bei Rot-Gruen-Sehschwaeche
+ * besser unterscheidbare Palette, siehe Color.kt-Kommentar.
+ */
+fun ampelFarbe(
+    ampel: Ampel,
+    hoherKontrast: Boolean = false,
+): Color =
     when (ampel) {
-        Ampel.GRUEN -> AmpelGruen
-        Ampel.GELB -> AmpelGelb
-        Ampel.ROT -> AmpelRot
+        Ampel.GRUEN -> if (hoherKontrast) AmpelGruenKontrast else AmpelGruen
+        Ampel.GELB -> if (hoherKontrast) AmpelGelbKontrast else AmpelGelb
+        Ampel.ROT -> if (hoherKontrast) AmpelRotKontrast else AmpelRot
     }
 
 /**
@@ -41,6 +52,7 @@ fun ampelFarbe(ampel: Ampel): Color =
 @Composable
 fun ZeitverlaufsDiagramm(
     tage: List<TagesAmpelUi>,
+    hoherKontrast: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -53,7 +65,7 @@ fun ZeitverlaufsDiagramm(
             if (tage.isEmpty()) return@Canvas
             val balkenBreite = size.width / tage.size
             tage.forEachIndexed { index, tag ->
-                val farbe = tag.ampel?.let(::ampelFarbe) ?: Color.LightGray
+                val farbe = tag.ampel?.let { ampelFarbe(it, hoherKontrast) } ?: Color.LightGray
                 val x = index * balkenBreite
                 val hoehe = if (tag.ampel != null) size.height else size.height * LEERER_TAG_HOEHE_ANTEIL
                 drawRect(
@@ -63,7 +75,7 @@ fun ZeitverlaufsDiagramm(
                 )
             }
         }
-        AmpelLegende(modifier = Modifier.padding(top = 8.dp))
+        AmpelLegende(hoherKontrast = hoherKontrast, modifier = Modifier.padding(top = 8.dp))
     }
 }
 
@@ -73,11 +85,14 @@ data class TagesAmpelUi(
 )
 
 @Composable
-fun AmpelLegende(modifier: Modifier = Modifier) {
+fun AmpelLegende(
+    hoherKontrast: Boolean = false,
+    modifier: Modifier = Modifier,
+) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         Ampel.entries.forEach { ampel ->
             Row {
-                Icon(ampel.icon(), contentDescription = null, tint = ampelFarbe(ampel))
+                Icon(ampel.icon(), contentDescription = null, tint = ampelFarbe(ampel, hoherKontrast))
                 Text(" " + ampel.anzeigename(), style = MaterialTheme.typography.bodySmall)
             }
         }

@@ -22,8 +22,9 @@ import app.schwindeljournal.data.local.entity.UserProfileEntity
  * (Phase 1, siehe [app.schwindeljournal.data.local.migration.MIGRATION_1_2]). Version 3:
  * UserProfile.journalFensterErweitert (Phase 2, siehe MIGRATION_2_3). Version 4:
  * ContentBlock-Tabelle (Phase 3, siehe MIGRATION_3_4). Version 5: Erinnerungs-
- * Einstellungen (Phase 4, siehe MIGRATION_4_5) - jede Migration additiv, bestehende
- * Daten bleiben beim Upgrade unangetastet.
+ * Einstellungen (Phase 4, siehe MIGRATION_4_5). Version 6: Ampel-Kontrast-Einstellung
+ * (Phase 4 Rest, siehe MIGRATION_5_6) - jede Migration additiv, bestehende Daten
+ * bleiben beim Upgrade unangetastet.
  */
 @Database(
     entities = [
@@ -34,7 +35,7 @@ import app.schwindeljournal.data.local.entity.UserProfileEntity
         SymptomEntity::class,
         ContentBlockEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = true,
 )
 @TypeConverters(Converters::class, DateTimeConverters::class)

@@ -65,6 +65,7 @@ private fun HauptShell(
     modusViewModel: ModusViewModel,
 ) {
     val modus by modusViewModel.modus.collectAsStateWithLifecycle()
+    val ampelHoherKontrast by modusViewModel.ampelHoherKontrast.collectAsStateWithLifecycle()
 
     Scaffold(
         bottomBar = { HauptBottomNavigation(navController) },
@@ -80,8 +81,12 @@ private fun HauptShell(
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None },
         ) {
-            composable(Destination.SchnellErfassung.route) { SchnellErfassungScreen(modus) }
-            composable(Destination.JournalVerlauf.route) { JournalVerlaufScreen(modus) }
+            composable(Destination.SchnellErfassung.route) {
+                SchnellErfassungScreen(modus, ampelHoherKontrast)
+            }
+            composable(Destination.JournalVerlauf.route) {
+                JournalVerlaufScreen(modus, ampelHoherKontrast)
+            }
             composable(Destination.WissensBibliothek.route) { WissensBibliothekScreen(modus) }
             composable(Destination.UebungsBegleiter.route) { UebungsBegleiterScreen(modus) }
             composable(Destination.Einstellungen.route) {

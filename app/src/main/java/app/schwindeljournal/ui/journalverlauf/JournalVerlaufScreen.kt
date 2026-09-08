@@ -46,6 +46,7 @@ import app.schwindeljournal.ui.theme.AmpelRot
 @Composable
 fun JournalVerlaufScreen(
     modus: Modus?,
+    ampelHoherKontrast: Boolean = false,
     viewModel: JournalVerlaufViewModel = hiltViewModel(),
 ) {
     val eintraege by viewModel.eintraege.collectAsStateWithLifecycle()
@@ -92,6 +93,7 @@ fun JournalVerlaufScreen(
                         journalFensterErweitert = profil?.journalFensterErweitert == true,
                         musterHinweise = musterHinweise,
                         pdfExportLaeuft = pdfStatus is PdfExportStatus.Laeuft,
+                        ampelHoherKontrast = ampelHoherKontrast,
                     ),
                 onJournalFensterErweitertToggle = viewModel::onJournalFensterErweitertToggle,
                 onPdfExport = viewModel::exportierePdf,
@@ -102,6 +104,7 @@ fun JournalVerlaufScreen(
                 eintrag = eintrag,
                 kompakt = effektiverModus == Modus.QUICK,
                 zeigeReflexionsVorschau = effektiverModus == Modus.PEER,
+                ampelHoherKontrast = ampelHoherKontrast,
             )
         }
     }
@@ -114,6 +117,7 @@ private data class AuswertungsKopfZustand(
     val journalFensterErweitert: Boolean,
     val musterHinweise: List<MusterHinweis>,
     val pdfExportLaeuft: Boolean,
+    val ampelHoherKontrast: Boolean,
 )
 
 @Composable
@@ -144,7 +148,10 @@ private fun AuswertungsKopf(
     Column {
         Text("Zeitverlauf (${zustand.fensterTage} Tage)", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
-        ZeitverlaufsDiagramm(tage = zustand.tagesAmpel.map { TagesAmpelUi(it.schlimmste) })
+        ZeitverlaufsDiagramm(
+            tage = zustand.tagesAmpel.map { TagesAmpelUi(it.schlimmste) },
+            hoherKontrast = zustand.ampelHoherKontrast,
+        )
 
         if (zustand.modus == Modus.QUICK) {
             Spacer(modifier = Modifier.height(8.dp))
@@ -178,6 +185,7 @@ private fun JournalEintragKarte(
     eintrag: JournalEntryEntity,
     kompakt: Boolean,
     zeigeReflexionsVorschau: Boolean,
+    ampelHoherKontrast: Boolean,
 ) {
     Card(modifier = Modifier.padding(vertical = 2.dp)) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -185,7 +193,7 @@ private fun JournalEintragKarte(
                 Icon(
                     imageVector = eintrag.ampel.icon(),
                     contentDescription = eintrag.ampel.anzeigename(),
-                    tint = ampelFarbe(eintrag.ampel),
+                    tint = ampelFarbe(eintrag.ampel, ampelHoherKontrast),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(

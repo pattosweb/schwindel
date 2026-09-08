@@ -50,4 +50,11 @@ class EinstellungenViewModel
                 }
             }
         }
+
+        fun onAmpelHoherKontrastChange(aktiv: Boolean) {
+            val aktuelles = profil.value ?: return
+            viewModelScope.launch {
+                profileRepository.updateProfile(aktuelles.copy(ampelHoherKontrast = aktiv))
+            }
+        }
     }

@@ -32,6 +32,7 @@ import app.schwindeljournal.data.model.icon
 fun AmpelAuswahl(
     ausgewaehlt: Ampel?,
     onAmpelGewaehlt: (Ampel) -> Unit,
+    hoherKontrast: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -39,6 +40,7 @@ fun AmpelAuswahl(
             AmpelKarte(
                 ampel = ampel,
                 ausgewaehlt = ausgewaehlt == ampel,
+                hoherKontrast = hoherKontrast,
                 onClick = { onAmpelGewaehlt(ampel) },
             )
         }
@@ -49,9 +51,10 @@ fun AmpelAuswahl(
 private fun AmpelKarte(
     ampel: Ampel,
     ausgewaehlt: Boolean,
+    hoherKontrast: Boolean,
     onClick: () -> Unit,
 ) {
-    val farbe = ampelFarbe(ampel)
+    val farbe = ampelFarbe(ampel, hoherKontrast)
     OutlinedCard(
         onClick = onClick,
         modifier =

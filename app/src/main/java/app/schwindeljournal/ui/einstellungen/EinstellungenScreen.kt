@@ -67,7 +67,26 @@ fun EinstellungenScreen(
             "Erinnert dich einmal täglich ans Nachtragen – nur, wenn du heute noch nichts erfasst hast.",
         )
         ErinnerungAbschnitt(profil, viewModel)
+        AbschnittTrenner(
+            "Barrierefreiheit",
+            "Passt die Ampel-Farben für Rot-Grün-Sehschwäche an. Symbol und Text bleiben in " +
+                "jedem Fall zusätzlich zur Farbe sichtbar.",
+        )
+        BarrierefreiheitAbschnitt(profil, viewModel)
     }
+}
+
+@Composable
+private fun BarrierefreiheitAbschnitt(
+    profil: UserProfileEntity?,
+    viewModel: EinstellungenViewModel,
+) {
+    Text(text = "Kontrastreiche Ampel-Farben", style = MaterialTheme.typography.titleSmall)
+    Spacer(modifier = Modifier.height(8.dp))
+    JaNeinAuswahl(
+        ausgewaehlt = profil?.ampelHoherKontrast,
+        onAuswahl = viewModel::onAmpelHoherKontrastChange,
+    )
 }
 
 @Composable

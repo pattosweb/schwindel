@@ -35,6 +35,13 @@ class ModusViewModel
                 .map { it?.modus }
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), null)
 
+        // Barrierefreiheit (Phase 4 Rest): zentral wie der Modus, statt in jedem Screen
+        // einzeln aus dem Profil abzufragen (gleiches Prinzip wie oben bei [modus]).
+        val ampelHoherKontrast: StateFlow<Boolean> =
+            repository.profile
+                .map { it?.ampelHoherKontrast == true }
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), false)
+
         fun onModusGewaehlt(modus: Modus) {
             viewModelScope.launch { repository.createProfile(modus) }
         }

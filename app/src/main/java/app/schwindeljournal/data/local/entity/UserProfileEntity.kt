@@ -36,6 +36,9 @@ data class UserProfileEntity(
     // Phase 4: taegliche Erinnerung (zentral ueber WorkManager, siehe ReminderScheduler).
     val reminderAktiviert: Boolean? = null,
     val reminderUhrzeit: LocalTime? = null,
+    // Phase 4: Barrierefreiheit - kontrastreichere, bei Rot-Gruen-Sehschwaeche besser
+    // unterscheidbare Ampel-Palette (siehe ui/theme/Color.kt). null/false = Standard.
+    val ampelHoherKontrast: Boolean? = null,
 ) {
     companion object {
         const val SINGLETON_ID: Long = 1L
