@@ -134,6 +134,31 @@ nach Moeglichkeit im unteren/mittleren Bildschirmbereich platzieren. Kein akuter
 Handlungsbedarf jetzt (System-Zurueck-Geste bleibt die eigentliche Ein-Hand-Route),
 aber bei der naechsten UI-Ueberarbeitung mitdenken.
 
+## 4b. Zweiter ganzheitlicher Rundgang (CLAUDE.md Regel 6) — 08.09.2026, nach Phase 3 Rest + Phase 4 Rest
+Kompletter Durchgang nach Fresh-Install (DB leer) mit allen seit dem ersten Rundgang
+(Abschnitt 4a) neuen Features: Kompass → Onboarding → Schnell-Erfassung (Ampel Gelb,
+Details aufklappen, Trigger-Tag, Dauer, Begleitsymptom) → Speichern → Journal-Verlauf
+(Diagramm + plausibler Muster-Hinweis aus dem einen Eintrag) → PDF-Export (Share-Sheet
+öffnet) → Wissens-Bibliothek (Warnzeichen oben, Buchteile B–H darunter) → Übungs-
+Begleiter-Liste → Einstellungen → Steckbrief (Geburtsjahr + Medikament) → Speichern →
+App-Kill → Neustart → Geburtsjahr/Medikament korrekt erhalten (SQL bestaetigt) →
+Modus zu Peer → Reflexionsfrage aus dem neuen Pool sichtbar → Wissens-Bibliothek zeigt
+Teil G direkt nach dem Warnzeichen-Block (Prominenz erneut bestaetigt) → Modus zu Quick
+→ minimales Formular (Ampel + 1 Freitextzeile) → Speichern → Verlauf zeigt 30-Tage-
+Fenster ohne Muster-Karte, beide bisherigen Eintraege weiterhin sichtbar (kein
+Datenverlust ueber Moduswechsel) → Wissens-Bibliothek zeigt nur Warnzeichen + 11
+Kurzglossar-Eintraege → Übungs-Begleiter zeigt korrekten Hinweistext → Einstellungen:
+Erinnerung an → POST_NOTIFICATIONS erteilt → Job im JobScheduler bestaetigt (dumpsys)
+→ wieder aus → Barrierefreiheit-Sektion koexistiert sauber mit Erinnerung-Sektion.
+
+**Ergebnis:** Keine neuen Bugs, kein Absturz (logcat auf FATAL EXCEPTION geprueft),
+keine Sackgasse, kein Datenverlust bei Moduswechsel. Alle Phase-0–4-Funktionen inkl.
+der in dieser Sitzung neu ergaenzten (Übungs-Begleiter, Ampel-Kontrast,
+Reflexionsfragen-Pool) end-to-end nutzbar bestaetigt. Bereits bekannte Luecken (siehe
+Abschnitt 5) unveraendert, keine neuen gefunden. Volles Test-Gate vor dem Rundgang
+erneut gruen (ktlintCheck, detekt, assembleDebug, testDebugUnitTest,
+connectedDebugAndroidTest 15/15).
+
 ## 5. Bekannte Lücken / bewusst außerhalb des Scopes
 - RBAC: entfällt, Single-User-Offline-App (siehe CLAUDE.md)
 - Rate Limiting: entfällt, keine öffentlichen Endpunkte (siehe CLAUDE.md)
