@@ -1,5 +1,10 @@
 package app.schwindeljournal.ui.einstellungen
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,17 +19,31 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.schwindeljournal.data.local.entity.UserProfileEntity
 import app.schwindeljournal.data.model.Modus
+import app.schwindeljournal.ui.components.JaNeinAuswahl
 import app.schwindeljournal.ui.components.ModusAuswahl
+import app.schwindeljournal.ui.components.UhrzeitAuswahl
+import java.time.LocalTime
+
+private val STANDARD_ERINNERUNGSZEIT = LocalTime.of(20, 0)
 
 @Composable
 fun EinstellungenScreen(
     aktuellerModus: Modus?,
     onModusWechsel: (Modus) -> Unit,
     onSteckbriefOeffnen: () -> Unit,
+    viewModel: EinstellungenViewModel = hiltViewModel(),
 ) {
+    val profil by viewModel.profil.collectAsStateWithLifecycle()
+
     Column(
         modifier =
             Modifier
@@ -34,33 +53,84 @@ fun EinstellungenScreen(
     ) {
         Text(text = "Einstellungen", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Modus", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text =
-                "Ein Wechsel ändert nur Anzeige und Formularumfang – keine bisherigen " +
-                    "Daten gehen verloren.",
-            style = MaterialTheme.typography.bodySmall,
+        ModusAbschnitt(aktuellerModus, onModusWechsel)
+        AbschnittTrenner(
+            "Steckbrief",
+            "Persönliche Angaben, Medikamente und Ansprechpartner – in jedem Modus vollständig.",
         )
-        Spacer(modifier = Modifier.height(12.dp))
-        ModusAuswahl(
-            ausgewaehlterModus = aktuellerModus,
-            onModusGewaehlt = onModusWechsel,
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-        HorizontalDivider()
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Steckbrief", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = "Persönliche Angaben, Medikamente und Ansprechpartner – in jedem Modus vollständig.",
-            style = MaterialTheme.typography.bodySmall,
-        )
-        Spacer(modifier = Modifier.height(12.dp))
         OutlinedButton(
             onClick = onSteckbriefOeffnen,
             modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
         ) { Text("Steckbrief öffnen") }
+        AbschnittTrenner(
+            "Erinnerung",
+            "Erinnert dich einmal täglich ans Nachtragen – nur, wenn du heute noch nichts erfasst hast.",
+        )
+        ErinnerungAbschnitt(profil, viewModel)
+    }
+}
+
+@Composable
+private fun ModusAbschnitt(
+    aktuellerModus: Modus?,
+    onModusWechsel: (Modus) -> Unit,
+) {
+    Text(text = "Modus", style = MaterialTheme.typography.titleMedium)
+    Spacer(modifier = Modifier.height(4.dp))
+    Text(
+        text = "Ein Wechsel ändert nur Anzeige und Formularumfang – keine bisherigen Daten gehen verloren.",
+        style = MaterialTheme.typography.bodySmall,
+    )
+    Spacer(modifier = Modifier.height(12.dp))
+    ModusAuswahl(ausgewaehlterModus = aktuellerModus, onModusGewaehlt = onModusWechsel)
+}
+
+@Composable
+private fun AbschnittTrenner(
+    titel: String,
+    hinweis: String,
+) {
+    Spacer(modifier = Modifier.height(24.dp))
+    HorizontalDivider()
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(text = titel, style = MaterialTheme.typography.titleMedium)
+    Spacer(modifier = Modifier.height(4.dp))
+    Text(text = hinweis, style = MaterialTheme.typography.bodySmall)
+    Spacer(modifier = Modifier.height(12.dp))
+}
+
+@Composable
+private fun ErinnerungAbschnitt(
+    profil: UserProfileEntity?,
+    viewModel: EinstellungenViewModel,
+) {
+    val context = LocalContext.current
+    val benachrichtigungsLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { gewaehrt ->
+            if (gewaehrt) viewModel.onErinnerungAktivChange(true)
+        }
+
+    JaNeinAuswahl(
+        ausgewaehlt = profil?.reminderAktiviert,
+        onAuswahl = { aktiv ->
+            val berechtigungNoetig =
+                aktiv &&
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                    ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+                    PackageManager.PERMISSION_GRANTED
+            if (berechtigungNoetig) {
+                benachrichtigungsLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                viewModel.onErinnerungAktivChange(aktiv)
+            }
+        },
+    )
+    if (profil?.reminderAktiviert == true) {
+        Spacer(modifier = Modifier.height(12.dp))
+        UhrzeitAuswahl(
+            label = "Erinnerungszeit",
+            ausgewaehlteUhrzeit = profil.reminderUhrzeit ?: STANDARD_ERINNERUNGSZEIT,
+            onUhrzeitGewaehlt = viewModel::onErinnerungsUhrzeitChange,
+        )
     }
 }
