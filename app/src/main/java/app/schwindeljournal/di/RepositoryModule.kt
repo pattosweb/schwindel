@@ -1,5 +1,7 @@
 package app.schwindeljournal.di
 
+import app.schwindeljournal.data.repository.ContentBlockRepository
+import app.schwindeljournal.data.repository.ContentBlockRepositoryImpl
 import app.schwindeljournal.data.repository.JournalEntryRepository
 import app.schwindeljournal.data.repository.JournalEntryRepositoryImpl
 import app.schwindeljournal.data.repository.UserProfileRepository
@@ -17,4 +19,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindJournalEntryRepository(impl: JournalEntryRepositoryImpl): JournalEntryRepository
+
+    @Binds
+    abstract fun bindContentBlockRepository(impl: ContentBlockRepositoryImpl): ContentBlockRepository
 }
