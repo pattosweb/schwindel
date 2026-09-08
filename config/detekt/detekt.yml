@@ -1,0 +1,14 @@
+# Projektspezifische Overrides auf dem detekt-Default-Regelsatz
+# (buildUponDefaultConfig = true in app/build.gradle.kts).
+# Begruendung: Jetpack-Compose-Konventionen kollidieren mit zwei
+# Default-Regeln, die vor Compose entstanden sind.
+naming:
+  FunctionNaming:
+    active: true
+    ignoreAnnotated: ['Composable']
+
+style:
+  MagicNumber:
+    active: true
+    ignorePropertyDeclaration: true
+    ignoreAnnotated: ['Preview']
