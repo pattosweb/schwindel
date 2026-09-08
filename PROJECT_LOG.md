@@ -57,6 +57,7 @@ Ab 08.09.2026: erste Commits (Phase 0 + Phase 0.5 + Phase 1, siehe Roadmap).
 29. `Übungs-Begleiter: Teil-E-Übungen mit Timer und Wiederholungszähler`
 30. `Phase 4 Rest: Ampel-Farben mit hohem Kontrast (Barrierefreiheit)` (Room-Migration 5->6)
 31. `Phase 4 Rest: Reflexionsfragen-Pool für Peer-Modus`
+32. `Fix: Steckbrief-Geburtsjahr als scrollbare Jahr-Auswahl statt Zifferntastatur`
 
 Details/Verifikation zu 1–4 und 7–10: Test-Gate (`ktlintCheck`, `detekt`,
 `assembleDebug`, `testDebugUnitTest`, `connectedDebugAndroidTest`) grün vor jedem
@@ -158,6 +159,18 @@ Reflexionsfragen-Pool) end-to-end nutzbar bestaetigt. Bereits bekannte Luecken (
 Abschnitt 5) unveraendert, keine neuen gefunden. Volles Test-Gate vor dem Rundgang
 erneut gruen (ktlintCheck, detekt, assembleDebug, testDebugUnitTest,
 connectedDebugAndroidTest 15/15).
+
+## 4c. Bugfix: Steckbrief-Geburtsjahr (Nutzer-Feedback 08.09.2026)
+Patrick: "im steckbrief kann man das geburtsjahr nicht eintragen und ein
+datenscroller ist auch nicht vorhanden". Ursache: freies Zifferntextfeld statt
+eines antippbaren Auswahl-Elements wie bei den uebrigen Datumsfeldern - passt
+nicht zur uebrigen App und ist bei eingeschraenkter Feinmotorik unzuverlaessiger
+als ein Scroller. Ersetzt durch neue `JahrAuswahl`-Komponente (Button oeffnet
+scrollbare Jahresliste, automatisch zum aktuellen Wert gescrollt). Live auf
+Emulator verifiziert: Button oeffnet Liste, Drag-Scroll funktioniert ueber
+mehrere Bildschirme (1979→1972→1965 getestet), Tippen auf ein Jahr uebernimmt es
+und schliesst den Dialog, Speichern → App-Kill → Neustart → Wert korrekt via
+SQL bestaetigt (1969 erhalten). 15/15 Tests weiterhin gruen.
 
 ## 5. Bekannte Lücken / bewusst außerhalb des Scopes
 - RBAC: entfällt, Single-User-Offline-App (siehe CLAUDE.md)
