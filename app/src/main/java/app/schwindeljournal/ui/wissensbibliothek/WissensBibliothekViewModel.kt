@@ -3,6 +3,7 @@ package app.schwindeljournal.ui.wissensbibliothek
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.schwindeljournal.data.local.entity.ContentBlockEntity
+import app.schwindeljournal.data.model.BuchTeil
 import app.schwindeljournal.data.model.Modus
 import app.schwindeljournal.data.repository.ContentBlockRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -27,8 +29,9 @@ class WissensBibliothekViewModel
         val bloecke: StateFlow<List<ContentBlockEntity>> =
             modus
                 .filterNotNull()
-                .flatMapLatest { repository.observeSichtbareBloecke(it) }
-                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), emptyList())
+                .flatMapLatest { aktuellerModus ->
+                    repository.observeSichtbareBloecke(aktuellerModus).map { it.sortiertFuerAnzeige(aktuellerModus) }
+                }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), emptyList())
 
         fun onModusBekannt(aktuellerModus: Modus) {
             modus.value = aktuellerModus
@@ -38,3 +41,15 @@ class WissensBibliothekViewModel
             const val STOP_TIMEOUT_MILLIS = 5_000L
         }
     }
+
+/**
+ * Datenmodell-Doc Abschnitt 2: Peer zeigt "Teil G prominent oben". Warnzeichen bleibt
+ * in jedem Modus ganz oben (Sicherheitsrelevanz), sonst normale Buchteil-Reihenfolge.
+ */
+private fun List<ContentBlockEntity>.sortiertFuerAnzeige(modus: Modus): List<ContentBlockEntity> =
+    sortedWith(
+        compareByDescending<ContentBlockEntity> { it.istWarnzeichenInhalt }
+            .thenByDescending { modus == Modus.PEER && it.buchTeil == BuchTeil.G }
+            .thenBy { it.buchTeil }
+            .thenBy { it.titel },
+    )
