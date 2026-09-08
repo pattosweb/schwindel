@@ -26,15 +26,24 @@ Technische Details zu jedem Punkt: siehe `datenmodell-und-content-mapping.md`.
       `ModusViewModel` einmalig auf Activity-Ebene, explizit an Screens weitergereicht
 
 ## Phase 1 — Kernfunktion: Erfassung
-- [ ] Room-Datenmodell nach `datenmodell-und-content-mapping.md` Abschnitt 1
-      (JournalEntry als Superset-Schema, alle modus-spezifischen Felder nullable)
-- [ ] Schnell-Erfassung: modus-abhängige Feldmenge (Quick: Ampel + 1 Freitextzeile;
-      Kompass/Peer: alle Felder aufklappbar), Ampel + optionale Sprachnotiz
-- [ ] Detail-Nachtrag: Situation, Kopf-/Nackenposition, Begleitsymptome, Schlafqualität
-      (nur Kompass/Peer sichtbar)
-- [ ] Reflexionsfrage-Feld nur im Peer-Modus anzeigen
-- [ ] Trigger-Tag-Bibliothek (vordefinierte, antippbare Situationstags)
-- [ ] Warnzeichen-Checkbox ("keines der Warnzeichen aufgetreten") in allen Modi
+- [x] Room-Datenmodell nach `datenmodell-und-content-mapping.md` Abschnitt 1
+      (JournalEntry als Superset-Schema, alle modus-spezifischen Felder nullable) —
+      additive Migration 1→2, adversarial getestet (MigrationTestHelper: bestehender
+      Steckbrief bleibt beim Upgrade unangetastet)
+- [x] Schnell-Erfassung: modus-abhängige Feldmenge (Quick: Ampel + 1 Freitextzeile;
+      Kompass/Peer: alle Felder aufklappbar), Ampel + gleichwertige Sprachnotiz-Option
+      auf jedem Freitextfeld (System-Diktier-Intent)
+- [x] Detail-Nachtrag: Situation, Kopf-/Nackenposition, Begleitsymptome, Schlafqualität
+      (nur Kompass/Peer sichtbar, aufklappbar ohne Animation)
+- [x] Reflexionsfrage-Feld nur im Peer-Modus anzeigen (prominent, nicht im Detail-
+      Bereich versteckt)
+- [x] Trigger-Tag-Bibliothek (vordefinierte, antippbare Situationstags) — füllt die
+      Situations-Freitextzeile, kein eigenes Datenfeld
+- [x] Warnzeichen-Checkbox ("keines der Warnzeichen aufgetreten") in allen Modi,
+      Default true (kein Zusatz-Tap im Normalfall)
+- [x] (Vorgriff auf Phase 2) einfache chronologische Journal-Verlauf-Liste, damit der
+      Erfassungs-Flow end-to-end nachvollziehbar ist — Diagramme/Auswertung bleiben
+      Phase 2
 
 ## Phase 2 — Auswertung
 - [ ] Zeitverlaufs-Diagramm (Ampelfarbe über Zeit) — in Quick-Modus vereinfachte Ansicht

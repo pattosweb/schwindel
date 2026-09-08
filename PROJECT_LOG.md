@@ -25,18 +25,31 @@ targetSdk 35. DI: Hilt. Gradle 8.10.2 (Wrapper committed).
 Siehe CLAUDE.md — vollständig übernommen, keine Abweichung.
 
 ## 4. Vollständige Commit-Historie
-Ab 08.09.2026: erste Commits (Phase 0 + Phase 0.5, siehe Roadmap).
+Ab 08.09.2026: erste Commits (Phase 0 + Phase 0.5 + Phase 1, siehe Roadmap).
 1. `Phase 0: Android-Projekt-Grundgeruest (Compose, Navigation, ktlint/detekt)`
 2. `Phase 0.5: Room-Datenschicht fuer Steckbrief/Modus (Version 1)`
 3. `Phase 0.5: Hilt-DI + Onboarding-Flow`
 4. `Phase 0.5: zentraler Modus-State + Einstellungen-Screen`
 5. `Konzept-Dokumentation: CLAUDE.md, Roadmap, Datenmodell, Skills, Manuskript`
+6. `Doku: Roadmap Phase 0/0.5 abgehakt, PROJECT_LOG nachgezogen`
+7. `Phase 1: JournalEntry/Symptom-Schema (Room-Migration 1->2)`
+8. `Phase 1: wiederverwendbare Erfassungs-Bausteine (Ampel, Trigger-Tags, Sprache)`
+9. `Phase 1: Schnell-Erfassung modus-abhaengig (Kompass/Peer/Quick)`
+10. `Phase 1 (Vorgriff): einfache Journal-Verlauf-Liste`
 
-Details/Verifikation zu 1–4: Test-Gate (`ktlintCheck`, `detekt`, `assembleDebug`,
-`connectedDebugAndroidTest`) grün vor jedem Commit; manueller Durchlauf auf einem
-headless x86_64-Emulator (Android 15, SwiftShader-Software-Rendering, da keine KVM-
-Gruppenmitgliedschaft in dieser Dev-Umgebung) verifiziert: Onboarding → Modus wählen →
-Hauptshell → Einstellungen → Moduswechsel → App-Kill → Neustart → Modus bleibt erhalten.
+Details/Verifikation zu 1–4 und 7–10: Test-Gate (`ktlintCheck`, `detekt`,
+`assembleDebug`, `testDebugUnitTest`, `connectedDebugAndroidTest`) grün vor jedem
+Commit; manueller Durchlauf auf einem headless x86_64-Emulator (Android 15,
+SwiftShader-Software-Rendering, da keine KVM-Gruppenmitgliedschaft in dieser
+Dev-Umgebung) verifiziert. Phase 0/0.5: Onboarding → Modus wählen → Hauptshell →
+Einstellungen → Moduswechsel → App-Kill → Neustart → Modus bleibt erhalten. Phase 1:
+Onboarding → Kompass → Ampel wählen → Details aufklappen → Trigger-Tag setzt
+Situation → Begleitsymptom wählen → Speichern → Eintrag erscheint im Journal-Verlauf;
+Moduswechsel zu Quick zeigt korrekt das minimale 1-Freitextzeilen-Formular.
+
+**Beim Live-Test gefunden und gefixt:** `LocalTime.toString()` zeigte in der UI
+Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktion
+(HH:mm) eingeführt und in Schnell-Erfassung + Journal-Verlauf verwendet.
 
 ## 5. Bekannte Lücken / bewusst außerhalb des Scopes
 - RBAC: entfällt, Single-User-Offline-App (siehe CLAUDE.md)
@@ -64,14 +77,12 @@ statt drei separate Apps zu bauen. Details siehe CLAUDE.md, Abschnitt
 "Multi-Varianten-Architektur", und `datenmodell-und-content-mapping.md`.
 
 ## 6. Nächste Schritte
-- Phase 1: `JournalEntry`/`Symptom`-Schema (additive Room-Migration v1→v2) nach
-  `datenmodell-und-content-mapping.md` Abschnitt 1
-- Schnell-Erfassungs-Screen (3-Tap-Eintrag) modus-abhängig nach Abschnitt 2 der
-  Datenmodell-Datei bauen (löst den aktuellen Platzhalter ab)
-- Trigger-Tag-Bibliothek, Warnzeichen-Checkbox, Reflexionsfrage-Feld (nur Peer)
-- Parallel dazu: PEER-/KURZ-Textfassungen der ContentBlocks redaktionell erstellen
-  (Blueprint-Skill `skill-app-content-varianten`, siehe skills/-Ordner) — laut Roadmap
-  bereits fertig, siehe `content-varianten-texte.md`
+- Phase 2: Zeitverlaufs-Diagramm (Ampelfarbe über Zeit), Korrelationsansicht
+  (Kompass/Peer), PDF-Export fürs Arztgespräch
+- Journal-Verlauf-Screen ausbauen: aktuell nur einfache chronologische Liste
+  (Vorgriff aus Phase 1), volle Tabelle/Detailansicht pro Eintrag fehlt noch
+- Parallel: PEER-/KURZ-Textfassungen der ContentBlocks stehen bereits fertig in
+  `content-varianten-texte.md` — Seed für Phase 3 (`ContentBlock`-Tabelle)
 
 ## 7. Nutzer-Arbeitsweise
 Siehe CLAUDE.md, Abschnitt "Nutzer-Arbeitsweise".
