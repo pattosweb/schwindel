@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,7 @@ import app.schwindeljournal.ui.components.formatiereUhrzeit
 @Composable
 fun SchnellErfassungScreen(
     modus: Modus?,
+    ampelHoherKontrast: Boolean = false,
     viewModel: SchnellErfassungViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState
@@ -52,7 +54,11 @@ fun SchnellErfassungScreen(
         Text(text = "Schnell-Erfassung", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
-        AmpelAuswahl(ausgewaehlt = state.ampel, onAmpelGewaehlt = viewModel::onAmpelGewaehlt)
+        AmpelAuswahl(
+            ausgewaehlt = state.ampel,
+            onAmpelGewaehlt = viewModel::onAmpelGewaehlt,
+            hoherKontrast = ampelHoherKontrast,
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         if (effektiverModus == Modus.QUICK) {
@@ -103,7 +109,7 @@ private fun AusfuehrlicheFelder(
         SprachEingabeTextField(
             value = state.reflexionsfrage,
             onValueChange = viewModel::onReflexionsfrageChange,
-            label = "Was beschäftigt dich heute dazu?",
+            label = remember { reflexionsfrageDesTages() },
             minLines = 2,
         )
         Spacer(modifier = Modifier.height(16.dp))
