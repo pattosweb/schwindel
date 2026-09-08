@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 data class SteckbriefUiState(
     val geladen: Boolean = false,
-    val geburtsjahr: String = "",
+    val geburtsjahr: Int? = null,
     val berufMitBelastung: Boolean? = null,
     val vorerkrankungen: String = "",
     val fruehereVerletzungen: String = "",
@@ -19,7 +19,7 @@ data class SteckbriefUiState(
 fun UserProfileEntity.zuSteckbriefDraft(): SteckbriefUiState =
     SteckbriefUiState(
         geladen = true,
-        geburtsjahr = geburtsjahr?.toString().orEmpty(),
+        geburtsjahr = geburtsjahr,
         berufMitBelastung = berufMitBelastung,
         vorerkrankungen = vorerkrankungen.orEmpty(),
         fruehereVerletzungen = fruehereVerletzungenKopfNacken.orEmpty(),
@@ -31,7 +31,7 @@ fun UserProfileEntity.zuSteckbriefDraft(): SteckbriefUiState =
 
 fun UserProfileEntity.mitSteckbriefDraft(draft: SteckbriefUiState): UserProfileEntity =
     copy(
-        geburtsjahr = draft.geburtsjahr.toIntOrNull(),
+        geburtsjahr = draft.geburtsjahr,
         berufMitBelastung = draft.berufMitBelastung,
         vorerkrankungen = draft.vorerkrankungen.ifBlank { null },
         fruehereVerletzungenKopfNacken = draft.fruehereVerletzungen.ifBlank { null },

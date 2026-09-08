@@ -4,21 +4,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import app.schwindeljournal.ui.components.DatumAuswahl
 import app.schwindeljournal.ui.components.JaNeinAuswahl
+import app.schwindeljournal.ui.components.JahrAuswahl
 import app.schwindeljournal.ui.components.SprachEingabeTextField
 
 private typealias DraftUpdate = ((SteckbriefUiState) -> SteckbriefUiState) -> Unit
-
-private const val GEBURTSJAHR_STELLEN = 4
 
 @Composable
 fun PersonAbschnitt(
@@ -27,15 +22,10 @@ fun PersonAbschnitt(
 ) {
     Text("Zur Person", style = MaterialTheme.typography.titleMedium)
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
-        value = draft.geburtsjahr,
-        onValueChange = { text ->
-            onDraftChange { it.copy(geburtsjahr = text.filter(Char::isDigit).take(GEBURTSJAHR_STELLEN)) }
-        },
-        label = { Text("Geburtsjahr") },
-        keyboardOptions =
-            androidx.compose.foundation.text
-                .KeyboardOptions(keyboardType = KeyboardType.Number),
+    JahrAuswahl(
+        label = "Geburtsjahr",
+        ausgewaehltesJahr = draft.geburtsjahr,
+        onJahrGewaehlt = { jahr -> onDraftChange { it.copy(geburtsjahr = jahr) } },
         modifier = Modifier.fillMaxWidth(),
     )
     Spacer(modifier = Modifier.height(12.dp))
