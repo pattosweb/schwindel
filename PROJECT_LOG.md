@@ -68,6 +68,17 @@ Nanosekunden ("13:19:10.668105") — zentrale `formatiereUhrzeit()`-Hilfsfunktio
 - Dev-Umgebung dieser Session hat keine KVM-Gruppenmitgliedschaft → Emulator lief nur
   mit SwiftShader-Software-Rendering (langsamer, aber funktional); für flüssige
   manuelle Tests auf Patricks Maschine ggf. `sudo usermod -aG kvm $USER` prüfen
+- **Blueprint-Abgleich 08.09.2026 (`datenmodell-und-content-mapping.md` Abschnitt 2):**
+  Steckbrief-UI (Medikamente/Vorerkrankungen/Ansprechpartner bearbeiten) fehlt komplett
+  — Room-Entities existieren seit Phase 0.5, aber kein Screen dazu, und keine
+  Roadmap-Phase weist das aktuell explizit zu. Laut Blueprint sicherheitsrelevant
+  ("Steckbrief-Pflichtfelder Medikamente/Vorerkrankungen ... in keinem Modus gekürzt
+  oder versteckt") — sollte vor Phase 2/3 nachgezogen werden, Patrick entscheidet
+  Zeitpunkt/Priorität
+- **Blueprint-Abgleich 08.09.2026:** "Standard-Journal-Dauer" (60 Tage Kompass/Peer,
+  30 Tage Quick mit Erweiterungs-Option) ist in der aktuellen Journal-Verlauf-Liste
+  noch nicht umgesetzt — zeigt aktuell alle Einträge ohne Zeitfenster-Begrenzung;
+  sinnvoll im Rahmen des Journal-Verlauf-Ausbaus (siehe Abschnitt 6) mitzulösen
 
 ## 5a. Scope-Entscheidung vom 08.09.2026: Multi-Varianten-Architektur
 Ursprünglich war die App als Begleiter zu einem einzelnen Buch geplant. Auf Basis der

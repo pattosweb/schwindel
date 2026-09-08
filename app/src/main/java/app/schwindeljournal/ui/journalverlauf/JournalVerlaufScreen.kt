@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,7 +56,11 @@ fun JournalVerlaufScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(eintraege, key = { it.id }) { eintrag ->
-            JournalEintragKarte(eintrag = eintrag, kompakt = modus == Modus.QUICK)
+            JournalEintragKarte(
+                eintrag = eintrag,
+                kompakt = modus == Modus.QUICK,
+                zeigeReflexionsVorschau = modus == Modus.PEER,
+            )
         }
     }
 }
@@ -71,6 +76,7 @@ private fun ampelFarbe(ampel: Ampel) =
 private fun JournalEintragKarte(
     eintrag: JournalEntryEntity,
     kompakt: Boolean,
+    zeigeReflexionsVorschau: Boolean,
 ) {
     Card(modifier = Modifier.padding(vertical = 2.dp)) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -94,6 +100,15 @@ private fun JournalEintragKarte(
                     text = "⚠ Warnzeichen aufgetreten",
                     style = MaterialTheme.typography.bodySmall,
                     color = AmpelRot,
+                )
+            }
+            // Datenmodell-Doc Abschnitt 2: Peer zeigt in der Verlaufsansicht zusaetzlich
+            // eine Reflexionstext-Vorschau (nur dieser Modus befuellt das Feld ueberhaupt).
+            if (zeigeReflexionsVorschau && !eintrag.reflexionsfrageAntwort.isNullOrBlank()) {
+                Text(
+                    text = "\"${eintrag.reflexionsfrageAntwort}\"",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontStyle = FontStyle.Italic,
                 )
             }
         }
