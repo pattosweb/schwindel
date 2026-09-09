@@ -3,6 +3,7 @@ package app.schwindeljournal.data.seed
 import app.schwindeljournal.data.local.entity.ContentBlockEntity
 import app.schwindeljournal.data.model.BuchTeil
 import app.schwindeljournal.data.model.Modus
+import app.schwindeljournal.data.model.Sprache
 import app.schwindeljournal.data.model.VariantenTiefe
 
 /**
@@ -15,7 +16,7 @@ import app.schwindeljournal.data.model.VariantenTiefe
  */
 object ContentSeed {
     val alleBloecke: List<ContentBlockEntity> =
-        listOf(warnzeichenBlock) +
+        listOf(warnzeichenBlock, warnzeichenBlockEn) +
             teilABloecke +
             teilBBloecke +
             teilCBloecke +
@@ -23,7 +24,15 @@ object ContentSeed {
             teilEBloecke +
             teilFBloecke +
             teilGBloecke +
-            teilHBloecke
+            teilHBloecke +
+            teilABloeckeEn +
+            teilBBloeckeEn +
+            teilCBloeckeEn +
+            teilDBloeckeEn +
+            teilEBloeckeEn +
+            teilFBloeckeEn +
+            teilGBloeckeEn +
+            teilHBloeckeEn
 }
 
 private val warnzeichenBlock =
@@ -56,5 +65,43 @@ private val warnzeichenBlock =
             - Du bist gestürzt oder hattest beinahe einen Sturz durch den Schwindel
 
             Dieses Buch und sein Journal sind für die Zeit nach dieser Abklärung gedacht – als Werkzeug für das, was danach an Beobachtung und Verlaufskontrolle bleibt, nicht als Ersatz für den ersten wichtigen Schritt zum Arzt.
+            """.trimIndent(),
+    )
+
+// Sicherheitskritisch: Wortlaut zum FAST-Test lehnt sich bewusst an etablierte,
+// oeffentlich verbreitete Schlaganfall-Aufklaerung an (F.A.S.T. - Face, Arms, Speech,
+// Time - American Stroke Association/CDC), statt frei zu uebersetzen. Restlicher
+// Warnzeichen-Text ist ein KI-Entwurf, fachlich unspezifischer als der FAST-Teil.
+private val warnzeichenBlockEn =
+    ContentBlockEntity(
+        id = "teilA-warnzeichen-en",
+        buchTeil = BuchTeil.A,
+        titel = "When vertigo becomes an emergency",
+        variantenTiefe = VariantenTiefe.VOLL,
+        sichtbarInModus = setOf(Modus.KOMPASS, Modus.PEER, Modus.QUICK),
+        istWarnzeichenInhalt = true,
+        sprache = Sprache.EN,
+        inhaltMarkdown =
+            """
+            Most causes of vertigo and dizziness are unpleasant but not acutely dangerous – this journal is meant exactly for those. There is, however, a small group of causes where any delay can be risky, such as a stroke, a heart rhythm disorder, or a severe infection. You should know these warning signs so that, if in doubt, you act instead of waiting:
+
+            ### Call emergency services immediately or go to the emergency room if, along with the vertigo/dizziness, any of the following occurs:
+
+            - Sudden weakness or numbness in the arm, leg, or face, usually on one side
+            - Sudden trouble speaking or slurred speech, a drooping side of the face – remember the **FAST test**: **F**ace (does one side of the face droop?), **A**rms (can the person raise both arms evenly?), **S**peech (is speech slurred or strange?), **T**ime (if any of this occurs, call emergency services right away)
+            - Sudden, very severe headache, unlike anything experienced before
+            - Vision problems such as double vision or sudden vision loss, in addition to the dizziness
+            - Clouded consciousness, confusion, or fainting
+            - Chest pain, a racing or noticeably irregular heartbeat, or severe shortness of breath together with the dizziness
+            - Sudden, one-sided hearing loss together with severe spinning vertigo
+            - High fever and neck stiffness together with the dizziness
+
+            ### See a doctor promptly (within a few days), even without the warning signs above, if:
+
+            - This is the first time vertigo/dizziness has ever happened to you
+            - The episodes are getting stronger or lasting longer each time
+            - You fell, or nearly fell, because of the dizziness
+
+            This book and its journal are meant for the time after this initial medical check – as a tool for the observation and monitoring that follows, not as a substitute for that first, important step of seeing a doctor.
             """.trimIndent(),
     )
