@@ -3,6 +3,7 @@ package app.schwindeljournal.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import app.schwindeljournal.data.model.Modus
+import app.schwindeljournal.data.model.Sprache
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -39,6 +40,9 @@ data class UserProfileEntity(
     // Phase 4: Barrierefreiheit - kontrastreichere, bei Rot-Gruen-Sehschwaeche besser
     // unterscheidbare Ampel-Palette (siehe ui/theme/Color.kt). null/false = Standard.
     val ampelHoherKontrast: Boolean? = null,
+    // Phase 5: explizite Sprachwahl. null = folge Systemsprache (falls verfuegbar,
+    // sonst Deutsch), siehe resolveEffektiveSprache().
+    val sprache: Sprache? = null,
 ) {
     companion object {
         const val SINGLETON_ID: Long = 1L

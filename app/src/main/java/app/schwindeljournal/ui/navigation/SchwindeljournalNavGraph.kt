@@ -12,9 +12,12 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -22,10 +25,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import app.schwindeljournal.data.model.istRtl
 import app.schwindeljournal.ui.einstellungen.EinstellungenScreen
 import app.schwindeljournal.ui.journalverlauf.JournalVerlaufScreen
 import app.schwindeljournal.ui.onboarding.OnboardingScreen
 import app.schwindeljournal.ui.schnellerfassung.SchnellErfassungScreen
+import app.schwindeljournal.ui.shared.LocalSprache
 import app.schwindeljournal.ui.shared.ModusViewModel
 import app.schwindeljournal.ui.steckbrief.SteckbriefScreen
 import app.schwindeljournal.ui.uebungsbegleiter.UebungsBegleiterScreen
@@ -44,11 +49,17 @@ fun SchwindeljournalNavGraph(
     modusViewModel: ModusViewModel = hiltViewModel(),
 ) {
     val hasProfile by modusViewModel.hasProfile.collectAsStateWithLifecycle()
+    val sprache by modusViewModel.sprache.collectAsStateWithLifecycle()
 
-    when (hasProfile) {
-        null -> LadeAnzeige()
-        false -> OnboardingScreen(onModusGewaehlt = modusViewModel::onModusGewaehlt)
-        true -> HauptShell(navController = navController, modusViewModel = modusViewModel)
+    CompositionLocalProvider(
+        LocalSprache provides sprache,
+        LocalLayoutDirection provides if (sprache.istRtl()) LayoutDirection.Rtl else LayoutDirection.Ltr,
+    ) {
+        when (hasProfile) {
+            null -> LadeAnzeige()
+            false -> OnboardingScreen(onModusGewaehlt = modusViewModel::onModusGewaehlt)
+            true -> HauptShell(navController = navController, modusViewModel = modusViewModel)
+        }
     }
 }
 
@@ -112,7 +123,7 @@ private fun HauptBottomNavigation(navController: NavHostController) {
             ?.destination
             ?.route
     NavigationBar {
-        bottomNavItems.forEach { item ->
+        bottomNavItems().forEach { item ->
             NavigationBarItem(
                 selected = currentRoute == item.destination.route,
                 onClick = {

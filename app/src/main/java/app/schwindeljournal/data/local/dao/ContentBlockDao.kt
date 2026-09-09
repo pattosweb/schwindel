@@ -15,9 +15,12 @@ interface ContentBlockDao {
     suspend fun ersetzeAlle(bloecke: List<ContentBlockEntity>)
 
     @Query(
-        "SELECT * FROM content_block WHERE istWarnzeichenInhalt = 1 " +
-            "OR sichtbarInModus LIKE '%' || :modus || '%' " +
+        "SELECT * FROM content_block WHERE sprache = :sprache " +
+            "AND (istWarnzeichenInhalt = 1 OR sichtbarInModus LIKE '%' || :modus || '%') " +
             "ORDER BY istWarnzeichenInhalt DESC, buchTeil ASC",
     )
-    fun observeSichtbareBloecke(modus: String): Flow<List<ContentBlockEntity>>
+    fun observeSichtbareBloecke(
+        modus: String,
+        sprache: String,
+    ): Flow<List<ContentBlockEntity>>
 }

@@ -6,7 +6,10 @@ import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.SelfImprovement
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import app.schwindeljournal.data.model.Sprache
+import app.schwindeljournal.ui.shared.LocalSprache
 
 sealed class Destination(
     val route: String,
@@ -34,13 +37,31 @@ data class BottomNavItem(
 
 /**
  * Zentrale Liste der Haupt-Navigationsziele (Roadmap Phase 0). Bewusst eine
- * einzige Quelle statt verstreuter Bottom-Nav-Definitionen pro Screen.
+ * einzige Quelle statt verstreuter Bottom-Nav-Definitionen pro Screen. @Composable
+ * (statt einfachem val), damit die Labels der aktuellen [LocalSprache] folgen.
  */
-val bottomNavItems =
-    listOf(
-        BottomNavItem(Destination.SchnellErfassung, "Erfassen", Icons.Filled.Bolt),
-        BottomNavItem(Destination.JournalVerlauf, "Verlauf", Icons.Filled.History),
-        BottomNavItem(Destination.WissensBibliothek, "Wissen", Icons.AutoMirrored.Filled.MenuBook),
-        BottomNavItem(Destination.UebungsBegleiter, "Übungen", Icons.Filled.SelfImprovement),
-        BottomNavItem(Destination.Einstellungen, "Einstellungen", Icons.Filled.Settings),
+@Composable
+fun bottomNavItems(): List<BottomNavItem> {
+    val texte = bottomNavTexte(LocalSprache.current)
+    return listOf(
+        BottomNavItem(Destination.SchnellErfassung, texte.erfassen, Icons.Filled.Bolt),
+        BottomNavItem(Destination.JournalVerlauf, texte.verlauf, Icons.Filled.History),
+        BottomNavItem(Destination.WissensBibliothek, texte.wissen, Icons.AutoMirrored.Filled.MenuBook),
+        BottomNavItem(Destination.UebungsBegleiter, texte.uebungen, Icons.Filled.SelfImprovement),
+        BottomNavItem(Destination.Einstellungen, texte.einstellungen, Icons.Filled.Settings),
     )
+}
+
+private data class BottomNavTexte(
+    val erfassen: String,
+    val verlauf: String,
+    val wissen: String,
+    val uebungen: String,
+    val einstellungen: String,
+)
+
+private fun bottomNavTexte(sprache: Sprache): BottomNavTexte =
+    when (sprache) {
+        Sprache.EN -> BottomNavTexte("Log", "History", "Learn", "Exercises", "Settings")
+        else -> BottomNavTexte("Erfassen", "Verlauf", "Wissen", "Übungen", "Einstellungen")
+    }

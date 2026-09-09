@@ -13,6 +13,7 @@ import app.schwindeljournal.data.local.migration.MIGRATION_2_3
 import app.schwindeljournal.data.local.migration.MIGRATION_3_4
 import app.schwindeljournal.data.local.migration.MIGRATION_4_5
 import app.schwindeljournal.data.local.migration.MIGRATION_5_6
+import app.schwindeljournal.data.local.migration.MIGRATION_6_7
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,8 +31,14 @@ object DatabaseModule {
     ): AppDatabase =
         Room
             .databaseBuilder(context, AppDatabase::class.java, "schwindeljournal.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
-            .build()
+            .addMigrations(
+                MIGRATION_1_2,
+                MIGRATION_2_3,
+                MIGRATION_3_4,
+                MIGRATION_4_5,
+                MIGRATION_5_6,
+                MIGRATION_6_7,
+            ).build()
 
     @Provides
     fun provideUserProfileDao(database: AppDatabase): UserProfileDao = database.userProfileDao()

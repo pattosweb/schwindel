@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import app.schwindeljournal.data.local.converter.Converters
 import app.schwindeljournal.data.local.converter.DateTimeConverters
+import app.schwindeljournal.data.local.converter.SpracheConverter
 import app.schwindeljournal.data.local.dao.AnsprechpartnerDao
 import app.schwindeljournal.data.local.dao.ContentBlockDao
 import app.schwindeljournal.data.local.dao.JournalEntryDao
@@ -23,8 +24,9 @@ import app.schwindeljournal.data.local.entity.UserProfileEntity
  * UserProfile.journalFensterErweitert (Phase 2, siehe MIGRATION_2_3). Version 4:
  * ContentBlock-Tabelle (Phase 3, siehe MIGRATION_3_4). Version 5: Erinnerungs-
  * Einstellungen (Phase 4, siehe MIGRATION_4_5). Version 6: Ampel-Kontrast-Einstellung
- * (Phase 4 Rest, siehe MIGRATION_5_6) - jede Migration additiv, bestehende Daten
- * bleiben beim Upgrade unangetastet.
+ * (Phase 4 Rest, siehe MIGRATION_5_6). Version 7: Mehrsprachigkeit (Phase 5, siehe
+ * MIGRATION_6_7) - jede Migration additiv, bestehende Daten bleiben beim Upgrade
+ * unangetastet.
  */
 @Database(
     entities = [
@@ -35,10 +37,10 @@ import app.schwindeljournal.data.local.entity.UserProfileEntity
         SymptomEntity::class,
         ContentBlockEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = true,
 )
-@TypeConverters(Converters::class, DateTimeConverters::class)
+@TypeConverters(Converters::class, DateTimeConverters::class, SpracheConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userProfileDao(): UserProfileDao
 

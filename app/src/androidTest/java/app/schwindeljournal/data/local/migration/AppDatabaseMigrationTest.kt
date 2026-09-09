@@ -193,4 +193,52 @@ class AppDatabaseMigrationTest {
         aktualisiert.close()
         migriert.close()
     }
+
+    @Test
+    fun migration6Zu7ErhaeltBestandUndErgaenztSpracheSpalten() {
+        helper.createDatabase(dbName, 6).apply {
+            execSQL(
+                "INSERT INTO user_profile (id, modus, geburtsjahr, ampelHoherKontrast) " +
+                    "VALUES (1, 'QUICK', 2001, 1)",
+            )
+            execSQL(
+                "INSERT INTO content_block " +
+                    "(id, buchTeil, titel, variantenTiefe, inhaltMarkdown, sichtbarInModus, istWarnzeichenInhalt) " +
+                    "VALUES ('teilA-warnzeichen', 'A', 'Test', 'VOLL', 'x', 'KOMPASS,PEER,QUICK', 1)",
+            )
+            close()
+        }
+
+        val migriert = helper.runMigrationsAndValidate(dbName, 7, true, MIGRATION_6_7)
+
+        // Bestehendes Profil und bestehender ContentBlock unangetastet, sprache-Spalten
+        // wie erwartet: user_profile.sprache NULL ("folge Systemsprache"), content_block
+        // .sprache DEFAULT 'DE' fuer die Bestandszeile.
+        val profilCursor = migriert.query("SELECT modus, geburtsjahr, ampelHoherKontrast, sprache FROM user_profile")
+        profilCursor.moveToFirst()
+        assertEquals("QUICK", profilCursor.getString(0))
+        assertEquals(2001, profilCursor.getInt(1))
+        assertEquals(1, profilCursor.getInt(2))
+        assertEquals(true, profilCursor.isNull(3))
+        profilCursor.close()
+
+        val contentCursor = migriert.query("SELECT titel, sprache FROM content_block WHERE id = 'teilA-warnzeichen'")
+        contentCursor.moveToFirst()
+        assertEquals("Test", contentCursor.getString(0))
+        assertEquals("DE", contentCursor.getString(1))
+        contentCursor.close()
+
+        migriert.execSQL("UPDATE user_profile SET sprache = 'EN' WHERE id = 1")
+        migriert.execSQL(
+            "INSERT INTO content_block " +
+                "(id, buchTeil, titel, variantenTiefe, inhaltMarkdown, sichtbarInModus, " +
+                "istWarnzeichenInhalt, sprache) " +
+                "VALUES ('teilA-warnzeichen-en', 'A', 'Test EN', 'VOLL', 'x', 'KOMPASS,PEER,QUICK', 1, 'EN')",
+        )
+        val nachUpdate = migriert.query("SELECT COUNT(*) FROM content_block WHERE sprache = 'EN'")
+        nachUpdate.moveToFirst()
+        assertEquals(1, nachUpdate.getInt(0))
+        nachUpdate.close()
+        migriert.close()
+    }
 }

@@ -105,3 +105,16 @@ val MIGRATION_5_6 =
             db.execSQL("ALTER TABLE `user_profile` ADD COLUMN `ampelHoherKontrast` INTEGER")
         }
     }
+
+/**
+ * Additive Migration (Phase 5, Mehrsprachigkeit): explizite Sprachwahl im Profil
+ * (null = folge Systemsprache) sowie eine sprache-Spalte im ContentBlock (Default
+ * 'DE', damit alle bestehenden ~70 Zeilen unveraendert als Deutsch gelten).
+ */
+val MIGRATION_6_7 =
+    object : Migration(6, 7) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `user_profile` ADD COLUMN `sprache` TEXT")
+            db.execSQL("ALTER TABLE `content_block` ADD COLUMN `sprache` TEXT NOT NULL DEFAULT 'DE'")
+        }
+    }
