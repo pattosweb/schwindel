@@ -19,6 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import app.schwindeljournal.data.model.Sprache
+import app.schwindeljournal.data.model.code
+import app.schwindeljournal.ui.shared.LocalSprache
 import timber.log.Timber
 import java.util.Locale
 
@@ -38,6 +41,7 @@ fun SprachEingabeTextField(
     minLines: Int = 1,
 ) {
     val context = LocalContext.current
+    val sprache = LocalSprache.current
     val launcher =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
@@ -66,24 +70,38 @@ fun SprachEingabeTextField(
                     val intent =
                         Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.GERMANY.toLanguageTag())
+                            putExtra(RecognizerIntent.EXTRA_LANGUAGE, diktierSpracheTag(sprache))
                             putExtra(RecognizerIntent.EXTRA_PROMPT, label)
                         }
                     try {
                         launcher.launch(intent)
                     } catch (e: ActivityNotFoundException) {
                         Timber.w(e, "Spracherkennung auf diesem Geraet nicht verfuegbar")
-                        Toast
-                            .makeText(
-                                context,
-                                "Spracheingabe auf diesem Gerät nicht verfügbar – bitte eintippen.",
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                        Toast.makeText(context, spracheNichtVerfuegbarText(sprache), Toast.LENGTH_SHORT).show()
                     }
                 },
             ) {
-                Icon(imageVector = Icons.Filled.Mic, contentDescription = "Spracheingabe für $label")
+                Icon(imageVector = Icons.Filled.Mic, contentDescription = spracheingabeBeschreibung(sprache, label))
             }
         },
     )
 }
+
+/**
+ * Sprach-Tag fuer den System-Diktier-Intent - folgt der aktuell gewaehlten App-
+ * Sprache (vorher fest Deutsch), damit z. B. im Englisch-Modus auch englisch
+ * diktiert werden kann.
+ */
+private fun diktierSpracheTag(sprache: Sprache): String = Locale.forLanguageTag(sprache.code()).toLanguageTag()
+
+private fun spracheNichtVerfuegbarText(sprache: Sprache): String =
+    if (sprache == Sprache.EN) {
+        "Voice input not available on this device – please type instead."
+    } else {
+        "Spracheingabe auf diesem Gerät nicht verfügbar – bitte eintippen."
+    }
+
+private fun spracheingabeBeschreibung(
+    sprache: Sprache,
+    label: String,
+): String = if (sprache == Sprache.EN) "Voice input for $label" else "Spracheingabe für $label"

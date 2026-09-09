@@ -1,5 +1,6 @@
 package app.schwindeljournal.ui.schnellerfassung
 
+import app.schwindeljournal.data.model.Sprache
 import java.time.LocalDate
 
 /**
@@ -12,7 +13,7 @@ import java.time.LocalDate
  * Eine Frage pro Kalendertag statt zufaellig bei jedem Neu-Rendern, damit sie beim
  * Wiederkehren zum selben Eintrag (z. B. nach Details auf-/zuklappen) stabil bleibt.
  */
-private val reflexionsfragenPool =
+private val reflexionsfragenPoolDe =
     listOf(
         "Was hat dir heute trotz des Schwindels gutgetan?",
         "Gab es einen Moment heute, in dem du auf dich stolz sein kannst?",
@@ -30,7 +31,31 @@ private val reflexionsfragenPool =
         "Was würdest du dir selbst heute gern verzeihen?",
     )
 
-fun reflexionsfrageDesTages(datum: LocalDate = LocalDate.now()): String {
-    val index = Math.floorMod(datum.toEpochDay(), reflexionsfragenPool.size.toLong()).toInt()
-    return reflexionsfragenPool[index]
+// Reihenfolge/Bedeutung 1:1 zur deutschen Liste, damit derselbe Kalendertag-Index in
+// jeder Sprache zur "gleichen" Frage fuehrt.
+private val reflexionsfragenPoolEn =
+    listOf(
+        "What did you enjoy today despite the vertigo?",
+        "Was there a moment today you can be proud of?",
+        "What would you tell someone who went through exactly what you did today?",
+        "What thought stayed with you the most today?",
+        "What would you have wished for from others today?",
+        "Was there something that felt easier today than you expected?",
+        "How did you take care of yourself today?",
+        "What's giving you the most courage right now?",
+        "What would you have liked to talk to someone about today?",
+        "What was different today compared to a \"normal\" vertigo day?",
+        "What small win from today do you want to hold on to?",
+        "What's helping you be patient with yourself right now?",
+        "When did you feel safest today?",
+        "What would you like to forgive yourself for today?",
+    )
+
+fun reflexionsfrageDesTages(
+    datum: LocalDate = LocalDate.now(),
+    sprache: Sprache = Sprache.DE,
+): String {
+    val pool = if (sprache == Sprache.EN) reflexionsfragenPoolEn else reflexionsfragenPoolDe
+    val index = Math.floorMod(datum.toEpochDay(), pool.size.toLong()).toInt()
+    return pool[index]
 }

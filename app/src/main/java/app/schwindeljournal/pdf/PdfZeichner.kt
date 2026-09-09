@@ -22,6 +22,7 @@ import app.schwindeljournal.data.model.anzeigename
 import app.schwindeljournal.ui.components.formatiereDatum
 import app.schwindeljournal.ui.components.formatiereUhrzeit
 import app.schwindeljournal.ui.journalverlauf.MusterHinweis
+import app.schwindeljournal.ui.journalverlauf.renderDe
 
 private const val SEITE_BREITE = 595
 private const val SEITE_HOEHE = 842
@@ -272,7 +273,7 @@ fun PdfZeichner.zusammenfassung(
     if (musterHinweise.isEmpty()) {
         absatz("Noch nicht genug Einträge für Muster-Hinweise.")
     } else {
-        musterHinweise.forEach { absatz("• ${it.text}") }
+        musterHinweise.forEach { absatz("• ${it.renderDe()}") }
     }
     leerzeile()
     kleingedrucktes(

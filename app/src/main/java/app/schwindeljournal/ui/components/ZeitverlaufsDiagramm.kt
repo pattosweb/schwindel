@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import app.schwindeljournal.data.model.Ampel
 import app.schwindeljournal.data.model.anzeigename
 import app.schwindeljournal.data.model.icon
+import app.schwindeljournal.ui.shared.LocalSprache
 import app.schwindeljournal.ui.theme.AmpelGelb
 import app.schwindeljournal.ui.theme.AmpelGelbKontrast
 import app.schwindeljournal.ui.theme.AmpelGruen
@@ -89,11 +90,12 @@ fun AmpelLegende(
     hoherKontrast: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
+    val sprache = LocalSprache.current
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         Ampel.entries.forEach { ampel ->
             Row {
                 Icon(ampel.icon(), contentDescription = null, tint = ampelFarbe(ampel, hoherKontrast))
-                Text(" " + ampel.anzeigename(), style = MaterialTheme.typography.bodySmall)
+                Text(" " + ampel.anzeigename(sprache), style = MaterialTheme.typography.bodySmall)
             }
         }
     }

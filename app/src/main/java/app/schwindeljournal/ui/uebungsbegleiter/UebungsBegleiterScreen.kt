@@ -41,7 +41,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.schwindeljournal.data.local.entity.ContentBlockEntity
 import app.schwindeljournal.data.model.Modus
+import app.schwindeljournal.data.model.Sprache
 import app.schwindeljournal.ui.components.MarkdownText
+import app.schwindeljournal.ui.shared.LocalSprache
 import kotlinx.coroutines.delay
 
 /**
@@ -56,7 +58,8 @@ fun UebungsBegleiterScreen(
     viewModel: UebungsBegleiterViewModel = hiltViewModel(),
 ) {
     val effektiverModus = modus ?: Modus.QUICK
-    LaunchedEffect(effektiverModus) { viewModel.onModusBekannt(effektiverModus) }
+    val sprache = LocalSprache.current
+    LaunchedEffect(effektiverModus, sprache) { viewModel.onModusUndSpracheBekannt(effektiverModus, sprache) }
     val uebungen by viewModel.uebungen.collectAsStateWithLifecycle()
 
     var ausgewaehlteId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -68,12 +71,8 @@ fun UebungsBegleiterScreen(
                 block = ausgewaehlteUebung,
                 onZurueck = { ausgewaehlteId = null },
             )
-        effektiverModus == Modus.QUICK ->
-            HinweisText(
-                "Vollständige Übungen mit Timer sind im Kompass- oder Peer-Modus " +
-                    "verfügbar. Warnzeichen findest du in der Wissens-Bibliothek.",
-            )
-        uebungen.isEmpty() -> HinweisText("Übungen werden geladen …")
+        effektiverModus == Modus.QUICK -> HinweisText(nurVollePrivilegierteModiText(sprache))
+        uebungen.isEmpty() -> HinweisText(ladeUebungenText(sprache))
         else ->
             LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
                 items(uebungen, key = { it.id }) { block ->
@@ -125,9 +124,10 @@ private fun UebungsDetail(
                 .fillMaxSize()
                 .padding(16.dp),
     ) {
+        val sprache = LocalSprache.current
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onZurueck, modifier = Modifier.heightIn(min = 48.dp)) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück zur Übungsliste")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = zurueckBeschreibung(sprache))
             }
             Spacer(modifier = Modifier.width(4.dp))
             Text(text = block.titel, style = MaterialTheme.typography.titleLarge)
@@ -138,11 +138,11 @@ private fun UebungsDetail(
         HorizontalDivider()
         Spacer(modifier = Modifier.height(12.dp))
         // key = block.id: Timer/Zähler starten pro Übung wieder bei den Vorgabewerten.
-        TimerAbschnitt(key = block.id)
+        TimerAbschnitt(key = block.id, sprache = sprache)
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider()
         Spacer(modifier = Modifier.height(12.dp))
-        ZaehlerAbschnitt(key = block.id)
+        ZaehlerAbschnitt(key = block.id, sprache = sprache)
     }
 }
 
@@ -153,7 +153,10 @@ private const val MAX_SEKUNDEN = 300
 private const val TICK_MILLIS = 1_000L
 
 @Composable
-private fun TimerAbschnitt(key: String) {
+private fun TimerAbschnitt(
+    key: String,
+    sprache: Sprache,
+) {
     var vorgabeSekunden by remember(key) { mutableIntStateOf(START_SEKUNDEN) }
     var verbleibendeSekunden by remember(key) { mutableIntStateOf(START_SEKUNDEN) }
     var laeuft by remember(key) { mutableStateOf(false) }
@@ -174,7 +177,10 @@ private fun TimerAbschnitt(key: String) {
             style = MaterialTheme.typography.displaySmall,
         )
         if (verbleibendeSekunden <= 0) {
-            Text(text = "Fertig.", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = if (sprache == Sprache.EN) "Done." else "Fertig.",
+                style = MaterialTheme.typography.bodyMedium,
+            )
         }
         Spacer(modifier = Modifier.height(8.dp))
         TimerDauerSteuerung(
@@ -187,6 +193,7 @@ private fun TimerAbschnitt(key: String) {
         Spacer(modifier = Modifier.height(8.dp))
         TimerStartSteuerung(
             laeuft = laeuft,
+            sprache = sprache,
             onStartPause = {
                 if (verbleibendeSekunden <= 0) verbleibendeSekunden = vorgabeSekunden
                 laeuft = !laeuft
@@ -219,9 +226,11 @@ private fun TimerDauerSteuerung(
 @Composable
 private fun TimerStartSteuerung(
     laeuft: Boolean,
+    sprache: Sprache,
     onStartPause: () -> Unit,
     onReset: () -> Unit,
 ) {
+    val zuruecksetzenText = if (sprache == Sprache.EN) "Reset" else "Zurücksetzen"
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         OutlinedButton(onClick = onStartPause, modifier = Modifier.heightIn(min = 48.dp)) {
             Icon(if (laeuft) Icons.Filled.Pause else Icons.Filled.PlayArrow, contentDescription = null)
@@ -231,17 +240,24 @@ private fun TimerStartSteuerung(
         OutlinedButton(onClick = onReset, modifier = Modifier.heightIn(min = 48.dp)) {
             Icon(Icons.Filled.Refresh, contentDescription = null)
             Spacer(modifier = Modifier.width(6.dp))
-            Text("Zurücksetzen")
+            Text(zuruecksetzenText)
         }
     }
 }
 
 @Composable
-private fun ZaehlerAbschnitt(key: String) {
+private fun ZaehlerAbschnitt(
+    key: String,
+    sprache: Sprache,
+) {
     var wiederholungen by remember(key) { mutableIntStateOf(0) }
+    val istEnglisch = sprache == Sprache.EN
 
     Column {
-        Text(text = "Wiederholungszähler", style = MaterialTheme.typography.titleMedium)
+        Text(
+            text = if (istEnglisch) "Repetition counter" else "Wiederholungszähler",
+            style = MaterialTheme.typography.titleMedium,
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = "$wiederholungen", style = MaterialTheme.typography.displaySmall)
         Spacer(modifier = Modifier.height(8.dp))
@@ -249,11 +265,11 @@ private fun ZaehlerAbschnitt(key: String) {
             OutlinedButton(
                 onClick = { wiederholungen += 1 },
                 modifier = Modifier.heightIn(min = 48.dp),
-            ) { Text("+1 Wiederholung") }
+            ) { Text(if (istEnglisch) "+1 repetition" else "+1 Wiederholung") }
             OutlinedButton(
                 onClick = { wiederholungen = 0 },
                 modifier = Modifier.heightIn(min = 48.dp),
-            ) { Text("Zurücksetzen") }
+            ) { Text(if (istEnglisch) "Reset" else "Zurücksetzen") }
         }
     }
 }

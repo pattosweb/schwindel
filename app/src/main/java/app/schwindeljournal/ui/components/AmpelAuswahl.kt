@@ -23,6 +23,7 @@ import app.schwindeljournal.data.model.Ampel
 import app.schwindeljournal.data.model.anzeigename
 import app.schwindeljournal.data.model.beschreibung
 import app.schwindeljournal.data.model.icon
+import app.schwindeljournal.ui.shared.LocalSprache
 
 /**
  * Schwindelbarometer-Auswahl. Jede Farbe zusaetzlich mit Symbol + Text (UX-Leitplanke,
@@ -54,6 +55,7 @@ private fun AmpelKarte(
     hoherKontrast: Boolean,
     onClick: () -> Unit,
 ) {
+    val sprache = LocalSprache.current
     val farbe = ampelFarbe(ampel, hoherKontrast)
     OutlinedCard(
         onClick = onClick,
@@ -77,11 +79,11 @@ private fun AmpelKarte(
             Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(
-                    text = ampel.anzeigename(),
+                    text = ampel.anzeigename(sprache),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
-                Text(text = ampel.beschreibung(), style = MaterialTheme.typography.bodyMedium)
+                Text(text = ampel.beschreibung(sprache), style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

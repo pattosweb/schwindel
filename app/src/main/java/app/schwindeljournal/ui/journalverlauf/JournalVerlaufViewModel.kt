@@ -11,10 +11,12 @@ import app.schwindeljournal.data.local.entity.JournalEntryEntity
 import app.schwindeljournal.data.local.entity.MedikamentEntity
 import app.schwindeljournal.data.local.entity.SymptomEntity
 import app.schwindeljournal.data.local.entity.UserProfileEntity
+import app.schwindeljournal.data.model.Sprache
 import app.schwindeljournal.data.repository.JournalEntryRepository
 import app.schwindeljournal.data.repository.UserProfileRepository
 import app.schwindeljournal.pdf.JournalExportDaten
 import app.schwindeljournal.pdf.JournalPdfExporter
+import app.schwindeljournal.ui.components.vordefinierteTriggerTags
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -86,9 +88,10 @@ class JournalVerlaufViewModel
             pdfExportStatus = PdfExportStatus.Laeuft
             viewModelScope.launch {
                 runCatching {
+                    // PDF bleibt vorerst Deutsch (siehe PdfZeichner-Doku), daher fest Sprache.DE.
                     val musterHinweise =
                         berechneSymptomMuster(eintraege.value, symptome.value) +
-                            berechneTriggerMuster(eintraege.value)
+                            berechneTriggerMuster(eintraege.value, vordefinierteTriggerTags(Sprache.DE))
                     pdfExporter.exportiere(
                         JournalExportDaten(
                             profil = aktuellesProfil,

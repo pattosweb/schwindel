@@ -28,12 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.schwindeljournal.data.model.Modus
+import app.schwindeljournal.data.model.Sprache
 import app.schwindeljournal.ui.components.AmpelAuswahl
 import app.schwindeljournal.ui.components.BegleitsymptomeAuswahl
 import app.schwindeljournal.ui.components.DauerAuswahl
 import app.schwindeljournal.ui.components.SprachEingabeTextField
 import app.schwindeljournal.ui.components.TriggerTagAuswahl
 import app.schwindeljournal.ui.components.formatiereUhrzeit
+import app.schwindeljournal.ui.shared.LocalSprache
 
 @Composable
 fun SchnellErfassungScreen(
@@ -43,6 +45,8 @@ fun SchnellErfassungScreen(
 ) {
     val state = viewModel.uiState
     val effektiverModus = modus ?: Modus.QUICK
+    val sprache = LocalSprache.current
+    val istEnglisch = sprache == Sprache.EN
 
     Column(
         modifier =
@@ -51,7 +55,10 @@ fun SchnellErfassungScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp),
     ) {
-        Text(text = "Schnell-Erfassung", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = if (istEnglisch) "Quick Log" else "Schnell-Erfassung",
+            style = MaterialTheme.typography.headlineMedium,
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         AmpelAuswahl(
@@ -65,37 +72,58 @@ fun SchnellErfassungScreen(
             SprachEingabeTextField(
                 value = state.situation,
                 onValueChange = viewModel::onSituationChange,
-                label = "Kurznotiz",
+                label = if (istEnglisch) "Quick note" else "Kurznotiz",
             )
         } else {
-            AusfuehrlicheFelder(state = state, modus = effektiverModus, viewModel = viewModel)
+            AusfuehrlicheFelder(state = state, modus = effektiverModus, viewModel = viewModel, sprache = sprache)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
         WarnzeichenCheckbox(
             keinesAufgetreten = state.warnzeichenKeinesAufgetreten,
             onChange = viewModel::onWarnzeichenCheckboxChange,
+            istEnglisch = istEnglisch,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-        Button(
-            onClick = { viewModel.speichern(effektiverModus) },
-            enabled = state.kannGespeichertWerden,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 48.dp),
-        ) {
-            Text("Speichern")
-        }
+        SpeichernAbschnitt(
+            state = state,
+            effektiverModus = effektiverModus,
+            viewModel = viewModel,
+            istEnglisch = istEnglisch,
+        )
+    }
+}
 
-        state.zuletztGespeichertUm?.let { uhrzeit ->
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = "Zuletzt gespeichert um ${formatiereUhrzeit(uhrzeit)} Uhr.",
-                style = MaterialTheme.typography.bodySmall,
-            )
-        }
+@Composable
+private fun SpeichernAbschnitt(
+    state: SchnellErfassungUiState,
+    effektiverModus: Modus,
+    viewModel: SchnellErfassungViewModel,
+    istEnglisch: Boolean,
+) {
+    Button(
+        onClick = { viewModel.speichern(effektiverModus) },
+        enabled = state.kannGespeichertWerden,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp),
+    ) {
+        Text(if (istEnglisch) "Save" else "Speichern")
+    }
+
+    state.zuletztGespeichertUm?.let { uhrzeit ->
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text =
+                if (istEnglisch) {
+                    "Last saved at ${formatiereUhrzeit(uhrzeit)}."
+                } else {
+                    "Zuletzt gespeichert um ${formatiereUhrzeit(uhrzeit)} Uhr."
+                },
+            style = MaterialTheme.typography.bodySmall,
+        )
     }
 }
 
@@ -104,12 +132,14 @@ private fun AusfuehrlicheFelder(
     state: SchnellErfassungUiState,
     modus: Modus,
     viewModel: SchnellErfassungViewModel,
+    sprache: Sprache,
 ) {
+    val istEnglisch = sprache == Sprache.EN
     if (modus == Modus.PEER) {
         SprachEingabeTextField(
             value = state.reflexionsfrage,
             onValueChange = viewModel::onReflexionsfrageChange,
-            label = remember { reflexionsfrageDesTages() },
+            label = remember(sprache) { reflexionsfrageDesTages(sprache = sprache) },
             minLines = 2,
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -121,18 +151,25 @@ private fun AusfuehrlicheFelder(
             contentDescription = null,
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(if (state.detailsAufgeklappt) "Details ausblenden" else "Details ergänzen")
+        Text(
+            when {
+                state.detailsAufgeklappt && istEnglisch -> "Hide details"
+                state.detailsAufgeklappt -> "Details ausblenden"
+                istEnglisch -> "Add details"
+                else -> "Details ergänzen"
+            },
+        )
     }
 
     if (state.detailsAufgeklappt) {
-        DetailsInhalt(state = state, viewModel = viewModel)
+        DetailsInhalt(state = state, viewModel = viewModel, istEnglisch = istEnglisch)
     }
 
     Spacer(modifier = Modifier.height(16.dp))
     SprachEingabeTextField(
         value = state.tagesbewertung,
         onValueChange = viewModel::onTagesbewertungChange,
-        label = "Eigene Tagesbewertung",
+        label = if (istEnglisch) "Your own rating of the day" else "Eigene Tagesbewertung",
         minLines = 2,
     )
 }
@@ -141,32 +178,39 @@ private fun AusfuehrlicheFelder(
 private fun DetailsInhalt(
     state: SchnellErfassungUiState,
     viewModel: SchnellErfassungViewModel,
+    istEnglisch: Boolean,
 ) {
     Spacer(modifier = Modifier.height(8.dp))
     SprachEingabeTextField(
         value = state.situation,
         onValueChange = viewModel::onSituationChange,
-        label = "Situation/Tätigkeit",
+        label = if (istEnglisch) "Situation/activity" else "Situation/Tätigkeit",
     )
     Spacer(modifier = Modifier.height(8.dp))
     TriggerTagAuswahl(onTagAusgewaehlt = viewModel::onTriggerTagAusgewaehlt)
 
     Spacer(modifier = Modifier.height(16.dp))
-    Text("Kopf-/Nackenposition davor", style = MaterialTheme.typography.titleSmall)
+    Text(
+        if (istEnglisch) "Head/neck position beforehand" else "Kopf-/Nackenposition davor",
+        style = MaterialTheme.typography.titleSmall,
+    )
     Spacer(modifier = Modifier.height(4.dp))
     SprachEingabeTextField(
         value = state.kopfNackenPosition,
         onValueChange = viewModel::onKopfNackenPositionChange,
-        label = "z. B. \"nach oben geschaut\"",
+        label = if (istEnglisch) "e.g. \"looked up\"" else "z. B. \"nach oben geschaut\"",
     )
 
     Spacer(modifier = Modifier.height(16.dp))
-    Text("Dauer", style = MaterialTheme.typography.titleSmall)
+    Text(if (istEnglisch) "Duration" else "Dauer", style = MaterialTheme.typography.titleSmall)
     Spacer(modifier = Modifier.height(4.dp))
     DauerAuswahl(ausgewaehlteSekunden = state.dauerSekunden, onDauerGewaehlt = viewModel::onDauerGewaehlt)
 
     Spacer(modifier = Modifier.height(16.dp))
-    Text("Begleitsymptome", style = MaterialTheme.typography.titleSmall)
+    Text(
+        if (istEnglisch) "Accompanying symptoms" else "Begleitsymptome",
+        style = MaterialTheme.typography.titleSmall,
+    )
     Spacer(modifier = Modifier.height(4.dp))
     BegleitsymptomeAuswahl(
         ausgewaehlt = state.symptome,
@@ -179,13 +223,13 @@ private fun DetailsInhalt(
     SprachEingabeTextField(
         value = state.schlafqualitaet,
         onValueChange = viewModel::onSchlafqualitaetChange,
-        label = "Nacht davor: Schlafqualität",
+        label = if (istEnglisch) "Night before: sleep quality" else "Nacht davor: Schlafqualität",
     )
     Spacer(modifier = Modifier.height(8.dp))
     SprachEingabeTextField(
         value = state.kissenhoehe,
         onValueChange = viewModel::onKissenhoeheChange,
-        label = "Kissenhöhe/-art",
+        label = if (istEnglisch) "Pillow height/type" else "Kissenhöhe/-art",
     )
 }
 
@@ -193,6 +237,7 @@ private fun DetailsInhalt(
 private fun WarnzeichenCheckbox(
     keinesAufgetreten: Boolean,
     onChange: (Boolean) -> Unit,
+    istEnglisch: Boolean,
 ) {
     Row(
         modifier =
@@ -204,6 +249,9 @@ private fun WarnzeichenCheckbox(
     ) {
         Checkbox(checked = keinesAufgetreten, onCheckedChange = onChange)
         Spacer(modifier = Modifier.width(8.dp))
-        Text("Keines der Warnzeichen ist aufgetreten", style = MaterialTheme.typography.bodyMedium)
+        Text(
+            if (istEnglisch) "None of the warning signs occurred" else "Keines der Warnzeichen ist aufgetreten",
+            style = MaterialTheme.typography.bodyMedium,
+        )
     }
 }

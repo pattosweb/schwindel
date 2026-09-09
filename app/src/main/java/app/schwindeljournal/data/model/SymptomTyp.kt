@@ -10,7 +10,10 @@ enum class SymptomTyp {
     SONSTIGES,
 }
 
-fun SymptomTyp.anzeigename(): String =
+fun SymptomTyp.anzeigename(sprache: Sprache = Sprache.DE): String =
+    if (sprache == Sprache.EN) anzeigenameEn() else anzeigenameDe()
+
+private fun SymptomTyp.anzeigenameDe(): String =
     when (this) {
         SymptomTyp.OHRENSAUSEN -> "Ohrensausen"
         SymptomTyp.NACKENSCHMERZ -> "Nackenschmerz"
@@ -18,4 +21,14 @@ fun SymptomTyp.anzeigename(): String =
         SymptomTyp.SEHSTOERUNG -> "Sehstörung"
         SymptomTyp.HERZKLOPFEN -> "Herzklopfen"
         SymptomTyp.SONSTIGES -> "Sonstiges"
+    }
+
+private fun SymptomTyp.anzeigenameEn(): String =
+    when (this) {
+        SymptomTyp.OHRENSAUSEN -> "Tinnitus"
+        SymptomTyp.NACKENSCHMERZ -> "Neck pain"
+        SymptomTyp.KOPFSCHMERZ -> "Headache"
+        SymptomTyp.SEHSTOERUNG -> "Vision problems"
+        SymptomTyp.HERZKLOPFEN -> "Heart palpitations"
+        SymptomTyp.SONSTIGES -> "Other"
     }

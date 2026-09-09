@@ -12,8 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.schwindeljournal.data.model.Sprache
 import app.schwindeljournal.data.model.SymptomTyp
 import app.schwindeljournal.data.model.anzeigename
+import app.schwindeljournal.ui.shared.LocalSprache
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -24,6 +26,7 @@ fun BegleitsymptomeAuswahl(
     onSonstigesFreitextChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val sprache = LocalSprache.current
     Column(modifier = modifier) {
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -33,7 +36,7 @@ fun BegleitsymptomeAuswahl(
                 FilterChip(
                     selected = typ in ausgewaehlt,
                     onClick = { onToggle(typ) },
-                    label = { Text(typ.anzeigename()) },
+                    label = { Text(typ.anzeigename(sprache)) },
                     modifier = Modifier.heightIn(min = 48.dp),
                 )
             }
@@ -43,7 +46,7 @@ fun BegleitsymptomeAuswahl(
             SprachEingabeTextField(
                 value = sonstigesFreitext,
                 onValueChange = onSonstigesFreitextChange,
-                label = "Sonstiges Symptom",
+                label = if (sprache == Sprache.EN) "Other symptom" else "Sonstiges Symptom",
             )
         }
     }

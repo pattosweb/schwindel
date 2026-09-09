@@ -8,10 +8,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.schwindeljournal.data.model.Sprache
 import app.schwindeljournal.ui.components.DatumAuswahl
 import app.schwindeljournal.ui.components.JaNeinAuswahl
 import app.schwindeljournal.ui.components.JahrAuswahl
 import app.schwindeljournal.ui.components.SprachEingabeTextField
+import app.schwindeljournal.ui.shared.LocalSprache
 
 private typealias DraftUpdate = ((SteckbriefUiState) -> SteckbriefUiState) -> Unit
 
@@ -20,17 +22,22 @@ fun PersonAbschnitt(
     draft: SteckbriefUiState,
     onDraftChange: DraftUpdate,
 ) {
-    Text("Zur Person", style = MaterialTheme.typography.titleMedium)
+    val istEnglisch = LocalSprache.current == Sprache.EN
+    Text(if (istEnglisch) "About you" else "Zur Person", style = MaterialTheme.typography.titleMedium)
     Spacer(modifier = Modifier.height(8.dp))
     JahrAuswahl(
-        label = "Geburtsjahr",
+        label = if (istEnglisch) "Birth year" else "Geburtsjahr",
         ausgewaehltesJahr = draft.geburtsjahr,
         onJahrGewaehlt = { jahr -> onDraftChange { it.copy(geburtsjahr = jahr) } },
         modifier = Modifier.fillMaxWidth(),
     )
     Spacer(modifier = Modifier.height(12.dp))
     Text(
-        "Beruf/Tätigkeit mit viel Bildschirmarbeit oder einseitiger Haltung?",
+        if (istEnglisch) {
+            "Job/activity with a lot of screen work or one-sided posture?"
+        } else {
+            "Beruf/Tätigkeit mit viel Bildschirmarbeit oder einseitiger Haltung?"
+        },
         style = MaterialTheme.typography.bodyMedium,
     )
     Spacer(modifier = Modifier.height(4.dp))
@@ -45,17 +52,23 @@ fun VorerkrankungenAbschnitt(
     draft: SteckbriefUiState,
     onDraftChange: DraftUpdate,
 ) {
+    val istEnglisch = LocalSprache.current == Sprache.EN
     SprachEingabeTextField(
         value = draft.vorerkrankungen,
         onValueChange = { text -> onDraftChange { it.copy(vorerkrankungen = text) } },
-        label = "Bekannte Vorerkrankungen/Diagnosen",
+        label = if (istEnglisch) "Known pre-existing conditions/diagnoses" else "Bekannte Vorerkrankungen/Diagnosen",
         minLines = 2,
     )
     Spacer(modifier = Modifier.height(12.dp))
     SprachEingabeTextField(
         value = draft.fruehereVerletzungen,
         onValueChange = { text -> onDraftChange { it.copy(fruehereVerletzungen = text) } },
-        label = "Frühere Unfälle/Verletzungen Kopf-/Nackenbereich",
+        label =
+            if (istEnglisch) {
+                "Previous accidents/injuries to head/neck"
+            } else {
+                "Frühere Unfälle/Verletzungen Kopf-/Nackenbereich"
+            },
         minLines = 2,
     )
 }
@@ -65,7 +78,11 @@ fun VorfallAbschnitt(
     draft: SteckbriefUiState,
     onDraftChange: DraftUpdate,
 ) {
-    Text("Ist das dein erster Schwindel-Vorfall?", style = MaterialTheme.typography.bodyMedium)
+    val istEnglisch = LocalSprache.current == Sprache.EN
+    Text(
+        if (istEnglisch) "Is this your first episode of vertigo?" else "Ist das dein erster Schwindel-Vorfall?",
+        style = MaterialTheme.typography.bodyMedium,
+    )
     Spacer(modifier = Modifier.height(4.dp))
     JaNeinAuswahl(
         ausgewaehlt = draft.ersterVorfall,
@@ -76,7 +93,7 @@ fun VorfallAbschnitt(
         SprachEingabeTextField(
             value = draft.seitWannWiederkehrend,
             onValueChange = { text -> onDraftChange { it.copy(seitWannWiederkehrend = text) } },
-            label = "Seit wann tritt Schwindel wiederkehrend auf?",
+            label = if (istEnglisch) "Since when does it recur?" else "Seit wann tritt Schwindel wiederkehrend auf?",
         )
     }
 }
@@ -86,14 +103,15 @@ fun BlutdruckAbschnitt(
     draft: SteckbriefUiState,
     onDraftChange: DraftUpdate,
 ) {
+    val istEnglisch = LocalSprache.current == Sprache.EN
     SprachEingabeTextField(
         value = draft.letzterBlutdruck,
         onValueChange = { text -> onDraftChange { it.copy(letzterBlutdruck = text) } },
-        label = "Letzter gemessener Blutdruck",
+        label = if (istEnglisch) "Last measured blood pressure" else "Letzter gemessener Blutdruck",
     )
     Spacer(modifier = Modifier.height(8.dp))
     DatumAuswahl(
-        label = "Gemessen am",
+        label = if (istEnglisch) "Measured on" else "Gemessen am",
         ausgewaehltesDatum = draft.letzterBlutdruckDatum,
         onDatumGewaehlt = { datum -> onDraftChange { it.copy(letzterBlutdruckDatum = datum) } },
     )

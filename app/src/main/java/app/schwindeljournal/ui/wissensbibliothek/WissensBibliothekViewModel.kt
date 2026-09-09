@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import app.schwindeljournal.data.local.entity.ContentBlockEntity
 import app.schwindeljournal.data.model.BuchTeil
 import app.schwindeljournal.data.model.Modus
+import app.schwindeljournal.data.model.Sprache
 import app.schwindeljournal.data.repository.ContentBlockRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,17 +25,22 @@ class WissensBibliothekViewModel
     constructor(
         repository: ContentBlockRepository,
     ) : ViewModel() {
-        private val modus = MutableStateFlow<Modus?>(null)
+        private val modusUndSprache = MutableStateFlow<Pair<Modus, Sprache>?>(null)
 
         val bloecke: StateFlow<List<ContentBlockEntity>> =
-            modus
+            modusUndSprache
                 .filterNotNull()
-                .flatMapLatest { aktuellerModus ->
-                    repository.observeSichtbareBloecke(aktuellerModus).map { it.sortiertFuerAnzeige(aktuellerModus) }
+                .flatMapLatest { (aktuellerModus, aktuelleSprache) ->
+                    repository.observeSichtbareBloecke(aktuellerModus, aktuelleSprache).map {
+                        it.sortiertFuerAnzeige(aktuellerModus)
+                    }
                 }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), emptyList())
 
-        fun onModusBekannt(aktuellerModus: Modus) {
-            modus.value = aktuellerModus
+        fun onModusUndSpracheBekannt(
+            aktuellerModus: Modus,
+            aktuelleSprache: Sprache,
+        ) {
+            modusUndSprache.value = aktuellerModus to aktuelleSprache
         }
 
         private companion object {

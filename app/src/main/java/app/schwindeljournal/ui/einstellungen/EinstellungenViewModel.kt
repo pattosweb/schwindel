@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.schwindeljournal.data.local.entity.UserProfileEntity
+import app.schwindeljournal.data.model.Sprache
 import app.schwindeljournal.data.repository.UserProfileRepository
 import app.schwindeljournal.work.ReminderScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -55,6 +56,14 @@ class EinstellungenViewModel
             val aktuelles = profil.value ?: return
             viewModelScope.launch {
                 profileRepository.updateProfile(aktuelles.copy(ampelHoherKontrast = aktiv))
+            }
+        }
+
+        // null = "Automatisch" (folge Systemsprache), siehe resolveEffektiveSprache().
+        fun onSpracheChange(sprache: Sprache?) {
+            val aktuelles = profil.value ?: return
+            viewModelScope.launch {
+                profileRepository.updateProfile(aktuelles.copy(sprache = sprache))
             }
         }
     }

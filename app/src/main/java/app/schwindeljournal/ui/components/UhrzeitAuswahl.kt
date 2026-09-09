@@ -15,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.schwindeljournal.data.model.Sprache
+import app.schwindeljournal.ui.shared.LocalSprache
 import java.time.LocalTime
 
 /** Antippbarer Uhrzeitauswahl-Button + Material3-TimePicker-Dialog (Bordmittel). */
@@ -26,6 +28,7 @@ fun UhrzeitAuswahl(
     onUhrzeitGewaehlt: (LocalTime) -> Unit,
 ) {
     var dialogOffen by remember { mutableStateOf(false) }
+    val istEnglisch = LocalSprache.current == Sprache.EN
 
     OutlinedButton(onClick = { dialogOffen = true }, modifier = Modifier.heightIn(min = 48.dp)) {
         Text("$label: ${formatiereUhrzeit(ausgewaehlteUhrzeit)}")
@@ -44,10 +47,10 @@ fun UhrzeitAuswahl(
                 TextButton(onClick = {
                     onUhrzeitGewaehlt(LocalTime.of(zustand.hour, zustand.minute))
                     dialogOffen = false
-                }) { Text("Übernehmen") }
+                }) { Text(if (istEnglisch) "Apply" else "Übernehmen") }
             },
             dismissButton = {
-                TextButton(onClick = { dialogOffen = false }) { Text("Abbrechen") }
+                TextButton(onClick = { dialogOffen = false }) { Text(if (istEnglisch) "Cancel" else "Abbrechen") }
             },
             text = { TimePicker(state = zustand) },
         )

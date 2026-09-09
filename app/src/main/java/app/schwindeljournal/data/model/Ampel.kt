@@ -16,19 +16,39 @@ enum class Ampel {
     ROT,
 }
 
-fun Ampel.anzeigename(): String =
-    when (this) {
-        Ampel.GRUEN -> "Grün"
-        Ampel.GELB -> "Gelb"
-        Ampel.ROT -> "Rot"
+// sprache-Parameter defaultet auf Deutsch: bestehende Aufrufstellen ohne Argument
+// (v. a. PdfZeichner, das bewusst vorerst nur Deutsch bleibt) bleiben unveraendert.
+fun Ampel.anzeigename(sprache: Sprache = Sprache.DE): String =
+    when (sprache) {
+        Sprache.EN ->
+            when (this) {
+                Ampel.GRUEN -> "Green"
+                Ampel.GELB -> "Yellow"
+                Ampel.ROT -> "Red"
+            }
+        else ->
+            when (this) {
+                Ampel.GRUEN -> "Grün"
+                Ampel.GELB -> "Gelb"
+                Ampel.ROT -> "Rot"
+            }
     }
 
 /** Wortlaut 1:1 aus dem Buchmanuskript (Abschnitt 4.2), damit App und Buch konsistent bleiben. */
-fun Ampel.beschreibung(): String =
-    when (this) {
-        Ampel.GRUEN -> "Nichts zu bemerken"
-        Ampel.GELB -> "Kurz festhalten/stehenbleiben müssen"
-        Ampel.ROT -> "Nur Sitzen/Liegen möglich"
+fun Ampel.beschreibung(sprache: Sprache = Sprache.DE): String =
+    when (sprache) {
+        Sprache.EN ->
+            when (this) {
+                Ampel.GRUEN -> "Nothing to note"
+                Ampel.GELB -> "Had to briefly hold on/stop"
+                Ampel.ROT -> "Only sitting/lying possible"
+            }
+        else ->
+            when (this) {
+                Ampel.GRUEN -> "Nichts zu bemerken"
+                Ampel.GELB -> "Kurz festhalten/stehenbleiben müssen"
+                Ampel.ROT -> "Nur Sitzen/Liegen möglich"
+            }
     }
 
 fun Ampel.icon(): ImageVector =

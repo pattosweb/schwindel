@@ -28,7 +28,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.schwindeljournal.data.local.entity.ContentBlockEntity
 import app.schwindeljournal.data.model.Modus
+import app.schwindeljournal.data.model.Sprache
 import app.schwindeljournal.ui.components.MarkdownText
+import app.schwindeljournal.ui.shared.LocalSprache
 import app.schwindeljournal.ui.theme.AmpelRot
 
 @Composable
@@ -37,12 +39,13 @@ fun WissensBibliothekScreen(
     viewModel: WissensBibliothekViewModel = hiltViewModel(),
 ) {
     val effektiverModus = modus ?: Modus.QUICK
-    LaunchedEffect(effektiverModus) { viewModel.onModusBekannt(effektiverModus) }
+    val sprache = LocalSprache.current
+    LaunchedEffect(effektiverModus, sprache) { viewModel.onModusUndSpracheBekannt(effektiverModus, sprache) }
     val bloecke by viewModel.bloecke.collectAsStateWithLifecycle()
 
     if (bloecke.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-            Text("Inhalte werden geladen …", style = MaterialTheme.typography.bodyMedium)
+            Text(ladeText(sprache), style = MaterialTheme.typography.bodyMedium)
         }
         return
     }
@@ -55,6 +58,7 @@ fun WissensBibliothekScreen(
 @Composable
 private fun ContentBlockKarte(block: ContentBlockEntity) {
     val istWarnzeichen = block.istWarnzeichenInhalt
+    val sprache = LocalSprache.current
     Card(
         modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
         colors =
@@ -67,7 +71,7 @@ private fun ContentBlockKarte(block: ContentBlockEntity) {
         Column(modifier = Modifier.padding(16.dp)) {
             if (istWarnzeichen) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.Warning, contentDescription = "Sicherheitshinweis", tint = AmpelRot)
+                    Icon(Icons.Filled.Warning, contentDescription = sicherheitshinweisText(sprache), tint = AmpelRot)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(block.titel, style = MaterialTheme.typography.titleMedium)
                 }
@@ -79,3 +83,15 @@ private fun ContentBlockKarte(block: ContentBlockEntity) {
         }
     }
 }
+
+private fun ladeText(sprache: Sprache): String =
+    when (sprache) {
+        Sprache.EN -> "Loading content …"
+        else -> "Inhalte werden geladen …"
+    }
+
+private fun sicherheitshinweisText(sprache: Sprache): String =
+    when (sprache) {
+        Sprache.EN -> "Safety notice"
+        else -> "Sicherheitshinweis"
+    }

@@ -24,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import app.schwindeljournal.data.model.Sprache
+import app.schwindeljournal.ui.shared.LocalSprache
 import java.time.Year
 
 private const val JAHRE_ZURUECK = 110
@@ -43,12 +45,19 @@ fun JahrAuswahl(
     modifier: Modifier = Modifier,
 ) {
     var dialogOffen by remember { mutableStateOf(false) }
+    val istEnglisch = LocalSprache.current == Sprache.EN
 
     OutlinedButton(
         onClick = { dialogOffen = true },
         modifier = modifier.heightIn(min = 48.dp),
     ) {
-        Text(if (ausgewaehltesJahr != null) "$label: $ausgewaehltesJahr" else "$label auswählen")
+        Text(
+            when {
+                ausgewaehltesJahr != null -> "$label: $ausgewaehltesJahr"
+                istEnglisch -> "Select $label"
+                else -> "$label auswählen"
+            },
+        )
     }
 
     if (dialogOffen) {
@@ -80,6 +89,7 @@ private fun JahrAuswahlDialog(
         if (zielIndex >= 0) listenZustand.scrollToItem(zielIndex)
     }
 
+    val istEnglisch = LocalSprache.current == Sprache.EN
     AlertDialog(
         onDismissRequest = onAbbrechen,
         title = { Text(label) },
@@ -91,7 +101,7 @@ private fun JahrAuswahlDialog(
             }
         },
         confirmButton = {},
-        dismissButton = { TextButton(onClick = onAbbrechen) { Text("Abbrechen") } },
+        dismissButton = { TextButton(onClick = onAbbrechen) { Text(if (istEnglisch) "Cancel" else "Abbrechen") } },
     )
 }
 

@@ -24,6 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.schwindeljournal.data.model.Sprache
+import app.schwindeljournal.ui.shared.LocalSprache
 
 @Composable
 fun SteckbriefScreen(
@@ -33,6 +35,7 @@ fun SteckbriefScreen(
     val draft = viewModel.draft
     val medikamente by viewModel.medikamente.collectAsStateWithLifecycle()
     val ansprechpartner by viewModel.ansprechpartner.collectAsStateWithLifecycle()
+    val istEnglisch = LocalSprache.current == Sprache.EN
 
     Column(
         modifier =
@@ -44,40 +47,49 @@ fun SteckbriefScreen(
         TextButton(onClick = onZurueck, modifier = Modifier.heightIn(min = 48.dp)) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
             Spacer(modifier = Modifier.width(6.dp))
-            Text("Zurück zu Einstellungen")
+            Text(if (istEnglisch) "Back to Settings" else "Zurück zu Einstellungen")
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "Mein Steckbrief", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = if (istEnglisch) "My Profile" else "Mein Steckbrief",
+            style = MaterialTheme.typography.headlineMedium,
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text =
-                "Einmal ausfüllen, hilft dir selbst beim Einordnen und ist das Erste, was du " +
-                    "bei einem Arzttermin zusätzlich zu deinem Journal zeigen kannst. In jedem " +
-                    "Modus vollständig sichtbar – wird nie gekürzt.",
+                if (istEnglisch) {
+                    "Filling this in once helps you get your own bearings and is the first thing " +
+                        "you can show at a doctor's appointment along with your journal. Fully " +
+                        "visible in every mode – never shortened."
+                } else {
+                    "Einmal ausfüllen, hilft dir selbst beim Einordnen und ist das Erste, was du " +
+                        "bei einem Arzttermin zusätzlich zu deinem Journal zeigen kannst. In jedem " +
+                        "Modus vollständig sichtbar – wird nie gekürzt."
+                },
             style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(modifier = Modifier.height(24.dp))
 
         PersonAbschnitt(draft, viewModel::onDraftChange)
-        AbschnittTrenner("Medikamente")
+        AbschnittTrenner(if (istEnglisch) "Medications" else "Medikamente")
         MedikamenteAbschnitt(medikamente, viewModel::addMedikament, viewModel::deleteMedikament)
-        AbschnittTrenner("Vorerkrankungen & Verletzungen")
+        AbschnittTrenner(if (istEnglisch) "Pre-existing conditions & injuries" else "Vorerkrankungen & Verletzungen")
         VorerkrankungenAbschnitt(draft, viewModel::onDraftChange)
-        AbschnittTrenner("Verlauf")
+        AbschnittTrenner(if (istEnglisch) "History" else "Verlauf")
         VorfallAbschnitt(draft, viewModel::onDraftChange)
-        AbschnittTrenner("Blutdruck")
+        AbschnittTrenner(if (istEnglisch) "Blood pressure" else "Blutdruck")
         BlutdruckAbschnitt(draft, viewModel::onDraftChange)
-        AbschnittTrenner("Ansprechpartner")
+        AbschnittTrenner(if (istEnglisch) "Contacts" else "Ansprechpartner")
         AnsprechpartnerAbschnitt(ansprechpartner, viewModel::addAnsprechpartner, viewModel::deleteAnsprechpartner)
 
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = viewModel::speichern,
             modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
-        ) { Text("Speichern") }
+        ) { Text(if (istEnglisch) "Save" else "Speichern") }
         if (draft.gespeichert) {
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Gespeichert.", style = MaterialTheme.typography.bodySmall)
+            Text(if (istEnglisch) "Saved." else "Gespeichert.", style = MaterialTheme.typography.bodySmall)
         }
     }
 }

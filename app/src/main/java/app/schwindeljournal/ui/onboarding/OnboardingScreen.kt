@@ -20,11 +20,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.schwindeljournal.data.model.Modus
+import app.schwindeljournal.data.model.Sprache
 import app.schwindeljournal.ui.components.ModusAuswahl
+import app.schwindeljournal.ui.shared.LocalSprache
 
 @Composable
 fun OnboardingScreen(onModusGewaehlt: (Modus) -> Unit) {
     var ausgewaehlterModus by rememberSaveable { mutableStateOf<Modus?>(null) }
+    val istEnglisch = LocalSprache.current == Sprache.EN
 
     Column(
         modifier =
@@ -33,12 +36,20 @@ fun OnboardingScreen(onModusGewaehlt: (Modus) -> Unit) {
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp),
     ) {
-        Text(text = "Willkommen im Schwindeljournal", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = if (istEnglisch) "Welcome to Vertigo Journal" else "Willkommen im Schwindeljournal",
+            style = MaterialTheme.typography.headlineMedium,
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text =
-                "Wähle die Variante, die zu dir passt. Du kannst sie jederzeit in den " +
-                    "Einstellungen wechseln, ohne etwas zu verlieren.",
+                if (istEnglisch) {
+                    "Choose the variant that fits you. You can switch it anytime in Settings " +
+                        "without losing anything."
+                } else {
+                    "Wähle die Variante, die zu dir passt. Du kannst sie jederzeit in den " +
+                        "Einstellungen wechseln, ohne etwas zu verlieren."
+                },
             style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -55,7 +66,7 @@ fun OnboardingScreen(onModusGewaehlt: (Modus) -> Unit) {
                     .fillMaxWidth()
                     .heightIn(min = 48.dp),
         ) {
-            Text("Los geht's")
+            Text(if (istEnglisch) "Let's go" else "Los geht's")
         }
     }
 }

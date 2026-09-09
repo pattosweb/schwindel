@@ -15,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.schwindeljournal.data.model.Sprache
+import app.schwindeljournal.ui.shared.LocalSprache
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -28,9 +30,18 @@ fun DatumAuswahl(
     onDatumGewaehlt: (LocalDate?) -> Unit,
 ) {
     var dialogOffen by remember { mutableStateOf(false) }
+    val istEnglisch = LocalSprache.current == Sprache.EN
 
     OutlinedButton(onClick = { dialogOffen = true }, modifier = Modifier.heightIn(min = 48.dp)) {
-        Text(if (ausgewaehltesDatum != null) "$label: ${formatiereDatum(ausgewaehltesDatum)}" else "$label auswählen")
+        Text(
+            if (ausgewaehltesDatum != null) {
+                "$label: ${formatiereDatum(ausgewaehltesDatum)}"
+            } else if (istEnglisch) {
+                "Select $label"
+            } else {
+                "$label auswählen"
+            },
+        )
     }
 
     if (dialogOffen) {
@@ -51,10 +62,10 @@ fun DatumAuswahl(
                         onDatumGewaehlt(Instant.ofEpochMilli(millis).atZone(ZoneOffset.UTC).toLocalDate())
                     }
                     dialogOffen = false
-                }) { Text("Übernehmen") }
+                }) { Text(if (istEnglisch) "Apply" else "Übernehmen") }
             },
             dismissButton = {
-                TextButton(onClick = { dialogOffen = false }) { Text("Abbrechen") }
+                TextButton(onClick = { dialogOffen = false }) { Text(if (istEnglisch) "Cancel" else "Abbrechen") }
             },
         ) { DatePicker(state = zustand) }
     }
