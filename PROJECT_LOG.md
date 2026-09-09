@@ -172,6 +172,59 @@ mehrere Bildschirme (1979→1972→1965 getestet), Tippen auf ein Jahr uebernimm
 und schliesst den Dialog, Speichern → App-Kill → Neustart → Wert korrekt via
 SQL bestaetigt (1969 erhalten). 15/15 Tests weiterhin gruen.
 
+## 4d. Phase 5: Mehrsprachigkeit (Nutzerwunsch 09.09.2026)
+Patrick wollte Mehrsprachigkeit angehen: "deutsch, englisch, polnisch, russisch,
+französisch, türkisch, arabisch wären glaube ich die richtigen sprachen". Sprach-
+auswahl fachlich bestaetigt (deckt die groessten nicht-deutschsprachigen Patienten-
+gruppen in D/A/CH ab). Wegen des Umfangs (kompletter Buchinhalt + ~150 UI-Strings +
+RTL fuer Arabisch) mit Patrick auf zwei Entscheidungen geeinigt:
+1. Uebersetzungs-QA: KI-Entwurf ueberall, aber Warnzeichen-Uebersetzungen in
+   Nicht-DE/EN-Sprachen werden bei Einfuehrung explizit als "noch keine mutter-
+   sprachliche/medizinische Pruefung" markiert (dieser Abschnitt).
+2. Phasierung: erst Grundgeruest + Englisch komplett fertig, Rest (PL/RU/FR/TR/AR)
+   folgt separat.
+
+**Umgesetzt:** `Sprache`-Enum + additive Migration 6->7 (user_profile.sprache
+nullable, content_block.sprache Default DE) + `LocalSprache`-CompositionLocal
+(zentral in SchwindeljournalNavGraph, RTL-Layoutrichtung vorbereitet) + komplette
+UI-Lokalisierung (alle Screens/Komponenten, Enum-Anzeigenamen mit sprache-Parameter,
+Spracheingabe-Diktat folgt App-Sprache) + Einstellungen-Sprachschalter (Automatisch/
+Deutsch/English) + vollstaendige englische Uebersetzung des Buchinhalts (Warnzeichen +
+Teile A-H, alle VOLL/PEER/KURZ-Varianten, ~70 Zeilen).
+
+**Sicherheitskritischer Warnzeichen-Text:** FAST-Test-Passage lehnt sich an
+etablierte, oeffentlich verbreitete Schlaganfall-Aufklaerung an (Face-Arms-Speech-
+Time) statt frei zu uebersetzen - reduziert das Risiko einer fachlich ungenauen
+Übersetzung an der sicherheitskritischsten Stelle der App. Rest des englischen
+Warnzeichen-Texts und aller anderen Buchteile ist ein KI-Entwurf.
+
+**Adversariale QA (Nutzerfrage "wie loesen wir das mit dem Warnzeichenblocktest"):**
+Genau die Bug-Klasse aus Abschnitt 4 (Primary-Key-Kollision beim REPLACE-Seed) kann
+sich mit einer weiteren Dimension (Sprache) wiederholen - jede EN-Zeile hat daher
+ein `-en`-id-Suffix, UND es gibt jetzt den ersten echten Unit-Test des Projekts
+(`ContentSeedTest`, JVM, kein Android/Room noetig): keine doppelten ids ueber alle
+Sprachen/Varianten, pro verfuegbarer Sprache genau ein nicht-leerer Warnzeichen-
+Block, alle Buchteile A-H pro Sprache abgedeckt, DE/EN zeilengleich. Alle 4 Faelle
+gruen.
+
+**Live auf Emulator verifiziert (System-Locale Englisch):** Fresh Install -> Onboarding
+komplett auf Englisch (automatische Systemsprachen-Erkennung) -> Kompass-Erfassung
+(Ampel/Details/Trigger-Tags/Dauer/Symptome alle uebersetzt) -> Journal-Verlauf
+(Timeline/Legende/Muster-Karte/PDF-Button) -> Wissens-Bibliothek (englischer
+Warnzeichen-Block korrekt formatiert) -> Uebungs-Begleiter (alle 6 Uebungen +
+Timer/Zaehler uebersetzt) -> Einstellungen (Sprachschalter Automatisch/Deutsch/
+English, Live-Wechsel ohne Neustart bestaetigt, beide Richtungen) -> Steckbrief
+(inkl. Jahr-Auswahl-Dialog "Birth year"/"Cancel") -> explizit Englisch gewaehlt ->
+App-Kill -> Neustart -> Sprache korrekt erhalten (SQL bestaetigt). Kein Crash
+(logcat FATAL EXCEPTION geprueft). Volles Test-Gate gruen: ktlintCheck, detekt,
+assembleDebug, testDebugUnitTest (4/4 neue Tests), connectedDebugAndroidTest
+(16/16 inkl. neuem 6->7-Migrationstest).
+
+**PDF-Export bleibt bewusst Deutsch** (nicht mitlokalisiert in dieser Phase, siehe
+Abschnitt 5) - `Ampel.anzeigename()`/`beschreibung()`/`SymptomTyp.anzeigename()`
+haben einen `sprache`-Parameter mit Default `Sprache.DE`, PdfZeichner-Aufrufe bleiben
+daher unveraendert.
+
 ## 5. Bekannte Lücken / bewusst außerhalb des Scopes
 - RBAC: entfällt, Single-User-Offline-App (siehe CLAUDE.md)
 - Rate Limiting: entfällt, keine öffentlichen Endpunkte (siehe CLAUDE.md)
@@ -181,7 +234,18 @@ SQL bestaetigt (1969 erhalten). 15/15 Tests weiterhin gruen.
   Teil des aktuellen Scopes
 - PEER- und KURZ-Textfassungen der ContentBlocks: **fertig**, siehe
   `content-varianten-texte.md` (steht bereit als Seed-Grundlage für Claude Code)
-- Reflexionsfragen-Pool für den Peer-Modus inhaltlich noch nicht definiert
+- Reflexionsfragen-Pool für den Peer-Modus: **fertig**, siehe Abschnitt 4 (Phase 4
+  Rest) - inkl. englischer Fassung, siehe Abschnitt 4d
+- Mehrsprachigkeit: Grundgerüst + Deutsch/Englisch **fertig** (Abschnitt 4d).
+  Polnisch/Russisch/Französisch/Türkisch/Arabisch noch offen - Architektur ist
+  bereit, reine Übersetzungsarbeit + RTL-Test bei Arabisch. Warnzeichen-Übersetzungen
+  in diesen Sprachen brauchen vor Produktivnutzung eine muttersprachliche/fachliche
+  Prüfung (bisher nur DE/EN, DE original, EN mit FAST-Test-Sonderbehandlung, siehe
+  Abschnitt 4d)
+- PDF-Export bleibt vorerst nur Deutsch, auch wenn die App-Sprache Englisch ist -
+  bewusste Scope-Entscheidung für Phase 5, kein technisches Hindernis (Enum-
+  Anzeigenamen haben bereits einen sprache-Parameter, PdfZeichner nutzt einfach
+  weiterhin den Default DE) - bei Bedarf später nachziehen
 - Bottom-Navigation: Label "Einstellungen" bricht bei 5 Items in zwei Zeilen um
   (kosmetisch, Touch-Ziel bleibt ≥48dp, Symbol+Text weiterhin erkennbar) — bei
   Gelegenheit der eigentlichen Screen-Umsetzung mit-lösen (z. B. kürzeres Label oder

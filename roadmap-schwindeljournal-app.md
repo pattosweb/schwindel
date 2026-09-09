@@ -106,7 +106,30 @@ Technische Details zu jedem Punkt: siehe `datenmodell-und-content-mapping.md`.
 - [x] Reflexionsfragen-Pool für Peer-Modus hinterlegen — 14 Fragen, eine pro
       Kalendertag statt festem Einzelprompt
 
+## Phase 5 — Mehrsprachigkeit (Nutzerwunsch 09.09.2026, war zuvor zurückgestellt)
+- [x] Sprache-Datenmodell + Locale-Infrastruktur — `Sprache`-Enum (DE/EN/PL/RU/FR/
+      TR/AR), additive Migration 6→7 (`user_profile.sprache` nullable = folge
+      Systemsprache, `content_block.sprache` Default DE), `LocalSprache`
+      CompositionLocal zentral über `SchwindeljournalNavGraph` bereitgestellt
+      (gleiches Muster wie `ModusViewModel.modus`), RTL-Layoutrichtung vorbereitet
+      (greift, sobald Arabisch befüllt ist)
+- [x] UI vollständig auf Deutsch/Englisch umgestellt — alle Screens, alle
+      wiederverwendbaren Komponenten, Enum-Anzeigenamen, Spracheingabe-Diktat folgt
+      jetzt der App-Sprache statt fest Deutsch. Einstellungen: neuer Sprachschalter
+      (Automatisch/Deutsch/English), live reaktiv ohne Neustart
+- [x] Buchinhalt komplett ins Englische übersetzt — Warnzeichen-Block + alle Teile
+      A–H (VOLL/PEER/KURZ), FAST-Test-Passage an etablierte Schlaganfall-Aufklärung
+      angelehnt statt frei übersetzt (Sicherheitsrelevanz)
+- [x] Adversariale Absicherung — erster Unit-Test des Projekts (`ContentSeedTest`):
+      keine doppelten ContentBlock-ids, Warnzeichen-Block pro Sprache vollständig,
+      alle Buchteile A–H pro Sprache abgedeckt, DE/EN zeilengleich
+- [ ] Polnisch, Russisch, Französisch, Türkisch, Arabisch — noch offen (Architektur
+      ist bereit, reine Übersetzungsarbeit + RTL-Test bei Arabisch); Warnzeichen-
+      Übersetzungen in diesen Sprachen brauchen vor Produktivnutzung eine
+      muttersprachliche/fachliche Prüfung, siehe PROJECT_LOG
+- [ ] PDF-Export bleibt vorerst Deutsch (bewusst nicht mitlokalisiert, siehe
+      PROJECT_LOG "Bekannte Lücken")
+
 ## Bewusst zurückgestellt (siehe PROJECT_LOG.md, Abschnitt 5)
 - Cloud-Sync/Backup
 - Wearable-Integration
-- Mehrsprachigkeit
